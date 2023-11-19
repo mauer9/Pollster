@@ -1,13 +1,23 @@
-<h1>{{ question.question_text }}</h1>
-<p>date: {{ question.pub_date }}</p>
+<form action="{% url 'polls:vote' question.id %}" method='post'>
+{% csrf_token %}
 
-{% if question.choice_set.all %}
-  <ul>
-    <p>choices:</p>
+  <fieldset>
+    <legend><h1>{{ question.question_text }}</h1></legend>
+
+    <p>date: {{ question.pub_date }}</p>
+
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
     {% for choice in question.choice_set.all %}
-      <li>{{ choice.choice_text }}</li>
+      <input
+        type="radio" name="choice"
+        id="{{ forloop.counter }}" value="{{ choice.id }}">
+      <label for="{{ forloop.counter }}">
+        {{ choice.choice_text }}
+      </label></br>
     {% endfor %}
-  <ul>
-{% else %}
-  <p>There is no choices</p>
-{% endif %}
+  </fieldset>
+
+  <input type="submit" value="Vote">
+
+</form>
