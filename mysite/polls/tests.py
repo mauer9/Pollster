@@ -1,12 +1,10 @@
+import datetime
 from django.test import TestCase
-<<<<<<< Updated upstream
-
-# Create your tests here.
-=======
 from django.utils import timezone
 from django.urls import reverse
 
-from .models import Question
+from .models import Question, Choice
+import datetime
 
 class QuestionModelTest(TestCase):
     def test_recently_published_with_future_question(self):
@@ -46,57 +44,153 @@ def create_question(question_text, days):
     time = timezone.now() + datetime.timedelta(days=days)
     return Question.objects.create(question_text=question_text, pub_date=time)
 
+def create_choice(question_text, choice_text, votes):
+    return Choice.objects.create(question_text=question_text, choice_text=choice_text, votes=votes)
+
+def create_question_with_choice(question_text, days, choice_text, votes):
+    q = create_question(question_text=question_text, days=days)
+    c = create_choice(q, choice_text=choice_text, votes=votes)
+    return q,c
+
 class QuestionIndexViewTest(TestCase):
     def test_no_questions(self):
         """
-        if there is no question - test for appropriate message
+        there is no question to be displayed
         """
         response = self.client.get(reverse("polls:index"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "There is no polls")
         self.assertQuerySetEqual(response.context["questions"], [])
 
-    def test_past_questions(self):
+    def test_past_with_choice(self):
         """
-        question(s) from the past are displayed in the index page
+        1 question
+        - pub_date in the past
+        - with choices
         """
-        question = create_question('past question', days=-5)
+        question, _ = create_question_with_choice('', -1, '', 0)
         response = self.client.get(reverse("polls:index"))
-        self.assertQuerySetEqual(
-            response.context["questions"], [question]
-        )
+        self.assertQuerySetEqual(response.context['questions'], [question])
 
-    def test_future_questions(self):
+    def test_past_no_choice(self):
         """
-        question(s) with pub_date in the future are
-        not displayed in the index page
+        1 question
+        - pub_date in the past
+        - without choices
+        """
+        create_question('', -1)
+        response = self.client.get(reverse("polls:index"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "There is no polls")
+        self.assertQuerySetEqual(response.context["questions"], [])
+
+    def test_2past_with_and_without_choice(self):
+        """
+        2 questions
+        - pub_dates in the past
+        - 1 with choices
+        - 1 without choices
+        """
+        question, _ = create_question_with_choice('', -1, '', 0)
+        create_question('', -2)
+        response = self.client.get(reverse("polls:index"))
+        self.assertQuerySetEqual(response.context['questions'], [question])
+
+    def test_2past_with_choices(self):
+        """
+        2 questions
+        - pub_dates in the past
+        - with choices
+        """
+        question1, _ = create_question_with_choice('', -1, '', 0)
+        question2, _ = create_question_with_choice('', -2, '', 1)
+        response = self.client.get(reverse("polls:index"))
+        self.assertQuerySetEqual(response.context['questions'], [question1, question2])
+
+    def test_2past_without_choices(self):
+        """
+        2 questions
+        - pub_dates in the past
+        - without choices
+        """
+        create_question('', -1)
+        create_question('', -2)
+        response = self.client.get(reverse("polls:index"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "There is no polls")
+        self.assertQuerySetEqual(response.context["questions"], [])
+
+    def test_future_with_choices(self):
+        """
+        1 question
+        - pub_date in the future
+        - with choice
+        """
+        create_question_with_choice('', 1, '', 0)
+        response = self.client.get(reverse("polls:index"))
+        self.assertContains(response, "There is no polls")
+        self.assertQuerySetEqual(response.context["questions"], [])
+
+    def test_future_without_choices(self):
+        """
+        1 question
+        - pub_date in the future
+        - without choice
         """
         create_question('future question', days=5)
         response = self.client.get(reverse("polls:index"))
         self.assertContains(response, "There is no polls")
         self.assertQuerySetEqual(response.context["questions"], [])
 
-    def test_past_and_future_questions(self):
+    def test_past_future_with_choices(self):
         """
-        question(s) with pub_date in the future are
-        not displayed in the index page
-        but from past are
+        2 questions
+        - 1 pub_date in the past
+        - 1 pub_date in the future
+        - with choices
         """
-        question = create_question('past question', days=-5)
-        create_question('future question', days=5)
+        past_question, _ = create_question_with_choice('', -1, '', 0)
+        create_question_with_choice('', 1, '', 1)
         response = self.client.get(reverse("polls:index"))
         self.assertQuerySetEqual(
-            response.context["questions"], [question]
+            response.context["questions"], [past_question]
         )
 
-    def test_two_past_questions(self):
+
+class QuestionDetailViewTest(TestCase):
+    def test_past_with_choice(self):
         """
-        all question(s) from the past are displayed in the index page
+        1 question
+        - pub_date in the past
+        - with choices
         """
-        question1 = create_question('past question1', days=-5)
-        question2 = create_question('past question2', days=-10)
-        response = self.client.get(reverse("polls:index"))
-        self.assertQuerySetEqual(
-            response.context["questions"], [question1, question2]
-        )
->>>>>>> Stashed changes
+        past_question, _ = create_question_with_choice('', -1, '', 0)
+        url = reverse('polls:detail', args=(past_question.id,))
+        response = self.client.get(url)
+        x = response.context
+        print(type(x))
+        print()
+        print()
+        print()
+        print(response.content)
+        self.assertContains(response, past_question.question_text)
+
+    def test_future_question(self):
+        future_question = create_question("future question", 2)
+        url = reverse('polls:detail', args=(future_question.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+
+class QuestionResultViewTest(TestCase):
+    def test_future_question(self):
+        future_question = create_question("future question", 2)
+        url = reverse('polls:result', args=(future_question.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_past_question(self):
+        past_question = create_question("past question", -2)
+        url = reverse('polls:result', args=(past_question.id,))
+        response = self.client.get(url)
+        self.assertContains(response, past_question.question_text)
