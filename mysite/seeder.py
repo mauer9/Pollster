@@ -9,7 +9,7 @@ def seed_questions(n = 5):
     create dummy questions, 5 by default
     """
     for _ in range(n):
-        q = Question.objects.create(question_text = fake.sentence(), pub_date=timezone.now())
+        Question.objects.create(question_text = fake.sentence(), pub_date=timezone.now())
 
 def seed_choices(n = 2):
     """

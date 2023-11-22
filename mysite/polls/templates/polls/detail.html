@@ -1,3 +1,8 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'polls/bootstrap.min.css' %}">
+
+
+<div class="container">
 <form action="{% url 'polls:vote' question.id %}" method='post'>
 {% csrf_token %}
 
@@ -21,3 +26,4 @@
   <input type="submit" value="Vote">
 
 </form>
+</div>
