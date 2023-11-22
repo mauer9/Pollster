@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 django = "^4.2.7"
 django-stubs = {extras = ["compatible-mypy"], version = "^4.2.6"}
+faker = "^20.1.0"
 
 
 [build-system]
