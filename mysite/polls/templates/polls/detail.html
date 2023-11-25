@@ -1,29 +1,32 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'polls/bootstrap.min.css' %}">
-
-
-<div class="container">
-<form action="{% url 'polls:vote' question.id %}" method='post'>
-{% csrf_token %}
-
-  <fieldset>
-    <legend><h1>{{ question.question_text }}</h1></legend>
-
-    <p>date: {{ question.pub_date }}</p>
-
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
-    {% for choice in question.choice_set.all %}
-      <input
-        type="radio" name="choice"
-        id="{{ forloop.counter }}" value="{{ choice.id }}">
-      <label for="{{ forloop.counter }}">
-        {{ choice.choice_text }}
-      </label></br>
-    {% endfor %}
-  </fieldset>
-
-  <input type="submit" value="Vote">
-
-</form>
+<div class="container-fluid bg-dark h-100">
+    <div class="container d-flex flex-column align-items-center pt-5">
+        <form action="{% url 'polls:vote' question.id %}" method='post'>
+            <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>
+            {% csrf_token %}
+            <h1 class="text-white">{{ question.question_text }}</h1>
+            <p class="text-white">
+                <small>date: {{ question.pub_date }}</small>
+            </p>
+            {% if error_message %}
+                <p class="text-white">
+                    <strong>{{ error_message }}</strong>
+                </p>
+            {% endif %}
+            {% for choice in question.choice_set.all %}
+                <div class="input-group mb-3">
+                    <div class="input-group-text bg-dark border-secondary">
+                        <input type="radio"
+                               name="choice"
+                               id="{{ forloop.counter }}"
+                               value="{{ choice.id }}">
+                    </div>
+                    <label for="{{ forloop.counter }}"
+                           class="form-control bg-dark border-secondary text-white">{{ choice.choice_text }}</label>
+                </div>
+            {% endfor %}
+            <input type="submit" value="Vote" class="btn btn-primary">
+        </form>
+    </div>
 </div>
