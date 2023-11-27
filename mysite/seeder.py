@@ -1,21 +1,48 @@
 from django.utils import timezone
 from polls.models import Question, Choice
+from random import randint
 from faker import Faker
 fake = Faker()
 
 
-def seed_questions(n = 5):
+def seed_questions(n = 5, overwrite = False):
     """
-    create dummy questions, 5 by default
+    create dummy questions
     """
-    for _ in range(n):
-        Question.objects.create(question_text = fake.sentence(), pub_date=timezone.now())
+    if overwrite: Question.objects.all().delete()
 
-def seed_choices(n = 2):
+    questions = []
+    for _ in range(n):
+        questions.append(
+            Question.objects.create(
+                question_text = fake.sentence(), pub_date=timezone.now()
+            )
+        )
+    return questions
+
+def seed_choices(n = 2, questions = []):
     """
-    create choices for each question, 2 choice per question by default
+    create choices for questions
+    if questions not specified, create choices for all questions
     """
-    questions = Question.objects.all()
+    if not questions: questions = Question.objects.all()
+
     for question in questions:
         for _ in range(n):
-            Choice.objects.create(question_text = question, choice_text = fake.word())
+            Choice.objects.create(
+                choice_text = fake.word(),
+                question_text = question,
+                votes = randint(0, 10)
+            )
+
+def seed_all(questions_n = 5, choices_n = 2, overwrite = False, new_only = True):
+    """
+    seed questions and choices
+    """
+    new_questions = seed_questions(questions_n, overwrite)
+
+    if new_only:
+        seed_choices(choices_n, new_questions)
+    else:
+        seed_choices(choices_n)
+
