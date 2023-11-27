@@ -1,7 +1,7 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'polls/bootstrap.min.css' %}">
-<div class="container-fluid bg-dark h-100">
-    <div class="container d-flex flex-column align-items-center pt-5">
+<div class="container-fluid bg-dark min-vh-100">
+    <div class="container d-flex flex-column align-items-center py-5">
         <form action="{% url 'polls:vote' question.id %}" method='post'>
             <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>
             {% csrf_token %}
@@ -14,18 +14,17 @@
                     <strong>{{ error_message }}</strong>
                 </p>
             {% endif %}
-            {% for choice in question.choice_set.all %}
-                <div class="input-group mb-3">
-                    <div class="input-group-text bg-dark border-secondary">
+            <ul class="list-group list-group-flush mb-3 border-0">
+                {% for choice in question.choice_set.all %}
+                    <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-0">
                         <input type="radio"
                                name="choice"
                                id="{{ forloop.counter }}"
                                value="{{ choice.id }}">
-                    </div>
-                    <label for="{{ forloop.counter }}"
-                           class="form-control bg-dark border-secondary text-white">{{ choice.choice_text }}</label>
-                </div>
-            {% endfor %}
+                        <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.choice_text }}</label>
+                    </li>
+                {% endfor %}
+            </ul>
             <input type="submit" value="Vote" class="btn btn-primary">
         </form>
     </div>
