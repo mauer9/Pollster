@@ -1,21 +1,18 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'polls/bootstrap.min.css' %}">
-<div class="container-fluid bg-dark min-vh-100">
-    <div class="container d-flex flex-column align-items-center py-5">
-        {% if questions %}
-            <div class="list-group">
-                {% for question in questions %}
-                    <a href="{% url 'polls:detail' question.id %}"
-                       class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start text-center">
-                        {{ question.question_text }}
-                        <!-- implement choices badge
-                        <span class="badge bg-primary rounded-pill ms-2">14</span>
-                        -->
-                    </a>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>There is no polls</p>
-        {% endif %}
-    </div>
-</div>
+{% extends "./base.html" %}
+{% block content %}
+    {% if questions %}
+        <div class="list-group">
+            {% for question in questions %}
+                <a href="{% url 'polls:detail' question.id %}"
+                   class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start text-center">
+                    {{ question.question_text }}
+                    <!-- implement choices badge
+                    <span class="badge bg-primary rounded-pill ms-2">14</span>
+                    -->
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>There is no polls</p>
+    {% endif %}
+{% endblock %}

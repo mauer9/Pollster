@@ -1,23 +1,20 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'polls/bootstrap.min.css' %}">
-<div class="container-fluid bg-dark min-vh-100">
-    <div class="container d-flex flex-column align-items-center py-5">
-        <div>
-            <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>
-            <h1 class="text-white">{{ question.question_text }}</h1>
-            <p class="text-white">
-                <small>date: {{ question.pub_date }}</small>
-            </p>
-            <ul class="list-group list-group-flush mb-3 border-0">
-                {% for choice in question.choice_set.all %}
-                    <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-0">
-                        <span class="badge bg-primary rounded-pill">{{ choice.votes }}</span>
-                        <div class="mx-2 me-auto text-white">{{ choice.choice_text }}</div>
-                    </li>
-                {% endfor %}
-            </ul>
-            <a href="{% url 'polls:detail' question.id %}"
-               class=" btn btn-secondary mb-3 ">Vote again?</a>
-        </div>
+{% extends "./base.html" %}
+{% block content %}
+    <div>
+        <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>
+        <h1 class="text-white">{{ question.question_text }}</h1>
+        <p class="text-white">
+            <small>date: {{ question.pub_date }}</small>
+        </p>
+        <ul class="list-group list-group-flush mb-3 border-0">
+            {% for choice in question.choice_set.all %}
+                <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-0">
+                    <span class="badge bg-primary rounded-pill">{{ choice.votes }}</span>
+                    <div class="mx-2 me-auto text-white">{{ choice.choice_text }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'polls:detail' question.id %}"
+           class=" btn btn-secondary mb-3 ">Vote again?</a>
     </div>
-</div>
+{% endblock %}
