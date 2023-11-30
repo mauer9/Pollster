@@ -1,4 +1,4 @@
-{% extends "./base.html" %}
+{% extends "polls_base.html" %}
 {% block content %}
     <form action="{% url 'polls:vote' question.id %}" method='post'>
         <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>

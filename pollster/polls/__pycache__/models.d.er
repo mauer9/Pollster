@@ -1,7 +1,0 @@
-##[pylyzer] failed /home/mauer/0main/mysite/polls/models.py 1700591648 644
-.datetime = pyimport "datetime"
-
-.___v_desugar_1 = pyimport "django/db"
-.models: Never
-.___v_desugar_2 = pyimport "django/utils"
-.timezone: Never
