@@ -1,6 +1,3 @@
-- refactor view classes with Q and F objects??
-
-snippets for shell:
 from polls.models import Question, Choice
 from django.test.utils import setup_test_environment
 from django.test import Client

@@ -26,6 +26,13 @@ class DetailView(generic.DetailView):
         queryset = queryset.distinct()
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        question = self.get_object()
+        choices = question.choice_set.all().order_by('-votes')
+        context['choices'] = choices
+        return context
+
 def vote(request, pk):
     question = get_object_or_404(Question, pk=pk)
     try:
