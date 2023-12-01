@@ -12,14 +12,17 @@
                 <strong>{{ error_message }}</strong>
             </p>
         {% endif %}
-        <ul class="list-group list-group-flush mb-3 border-0">
+        <ul class="list-group list-group-flush mb-3">
             {% for choice in question.choice_set.all %}
-                <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-0">
-                    <input type="radio"
-                           name="choice"
-                           id="{{ forloop.counter }}"
-                           value="{{ choice.id }}">
-                    <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.choice_text }}</label>
+                <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-dark-subtle">
+                    <div class="ms-3 me-auto">
+                        <input type="radio"
+                               name="choice"
+                               id="{{ forloop.counter }}"
+                               value="{{ choice.id }}">
+                        <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.choice_text }}</label>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">{{ choice.votes }}</span>
                 </li>
             {% endfor %}
         </ul>

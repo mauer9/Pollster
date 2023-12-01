@@ -12,8 +12,7 @@ class IndexView(generic.ListView):
     context_object_name = "questions"
 
     def get_queryset(self):
-        queryset = Question.objects
-        queryset = queryset.filter(pub_date__lte=timezone.now(), choice__isnull=False)
+        queryset = Question.objects.filter(pub_date__lte=timezone.now(), choice__isnull=False)
         queryset = queryset.distinct()
         queryset = queryset.order_by("-pub_date")
         return queryset
@@ -23,23 +22,12 @@ class DetailView(generic.DetailView):
     template_name = "polls/detail.html"
 
     def get_queryset(self):
-        queryset = Question.objects
-        queryset = queryset.filter(pub_date__lte=timezone.now(), choice__isnull=False)
+        queryset = Question.objects.filter(pub_date__lte=timezone.now(), choice__isnull=False)
         queryset = queryset.distinct()
         return queryset
 
-class ResultView(generic.DetailView):
-    model = Question
-    template_name = "polls/result.html"
-
-    def get_queryset(self):
-        queryset = Question.objects
-        queryset = queryset.filter(pub_date__lte=timezone.now(), choice__isnull=False)
-        queryset = queryset.distinct()
-        return queryset
-
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
+def vote(request, pk):
+    question = get_object_or_404(Question, pk=pk)
     try:
         selected_choice = question.choice_set.get(
             pk=request.POST["choice"])
@@ -55,4 +43,4 @@ def vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
-        return HttpResponseRedirect(reverse("polls:result", args=(question.id,)))
+        return HttpResponseRedirect(reverse("polls:detail", args=(question.id,)))
