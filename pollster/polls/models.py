@@ -16,6 +16,14 @@ class Question(models.Model):
         now = timezone.now().date()
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
 
+    @property
+    def get_total_votes(self):
+        choices = self.choice_set.all()
+        total_votes = 0
+        for choice in choices:
+            total_votes += choice.votes
+        return total_votes
+
     def __str__(self): return self.question_text
 
 class Choice(models.Model):

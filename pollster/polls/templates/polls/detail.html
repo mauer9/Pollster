@@ -12,6 +12,7 @@
                 <strong>{{ error_message }}</strong>
             </p>
         {% endif %}
+        <p>{{ question.get_total_votes }}</p>
         <ul class="list-group list-group-flush mb-3">
             {% for choice in choices %}
                 <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-dark-subtle">
