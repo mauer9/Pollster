@@ -11,14 +11,12 @@ def seed_questions(n = 5, overwrite = False):
     """
     if overwrite: Question.objects.all().delete()
 
-    questions = []
-    for _ in range(n):
-        questions.append(
-            Question.objects.create(
-                question_text = fake.sentence(), pub_date=timezone.now()
-            )
+    return [
+        Question.objects.create(
+            question_text=fake.sentence(), pub_date=timezone.now()
         )
-    return questions
+        for _ in range(n)
+    ]
 
 def seed_choices(n = 2, questions = []):
     """
