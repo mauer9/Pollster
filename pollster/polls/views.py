@@ -29,7 +29,7 @@ class DetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         question = self.get_object()
-        choices = question.choice_set.all().order_by('-votes')
+        choices = question.get_choices_with_params()
         context['choices'] = choices
         return context
 
