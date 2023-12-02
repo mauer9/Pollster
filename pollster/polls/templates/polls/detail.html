@@ -5,21 +5,36 @@
         {% csrf_token %}
         <h1 class="text-white">{{ question.question_text }}</h1>
         <p class="text-white">
-            <small>date: {{ question.pub_date }}</small>
+            <small>date: {{ question.pub_date }}, <b>{{ question.get_total_votes }}</b> votes</small>
         </p>
         {% if error_message %}
             <p class="text-white">
                 <strong>{{ error_message }}</strong>
             </p>
         {% endif %}
-        <ul class="list-group list-group-flush mb-3 border-0">
-            {% for choice in question.choice_set.all %}
-                <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-0">
-                    <input type="radio"
-                           name="choice"
-                           id="{{ forloop.counter }}"
-                           value="{{ choice.id }}">
-                    <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.choice_text }}</label>
+        <div class="progress-stacked">
+            {% for choice in choices %}
+                <div class="progress"
+                     role="progressbar"
+                     aria-label="Segment one"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     style="width: {{ choice.percent }}%">
+                    <div class="progress-bar bg-{{ choice.color }}"></div>
+                </div>
+            {% endfor %}
+        </div>
+        <ul class="list-group list-group-flush mb-3">
+            {% for choice in choices %}
+                <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-dark-subtle">
+                    <div class="ms-3 me-auto">
+                        <input type="radio"
+                               name="choice"
+                               id="{{ forloop.counter }}"
+                               value="{{ choice.id }}">
+                        <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.text }}</label>
+                    </div>
+                    <span class="badge bg-{{ choice.color }} rounded-pill">{{ choice.votes }}</span>
                 </li>
             {% endfor %}
         </ul>
