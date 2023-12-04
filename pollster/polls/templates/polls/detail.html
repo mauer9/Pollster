@@ -34,7 +34,8 @@
                                value="{{ choice.id }}">
                         <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.text }}</label>
                     </div>
-                    <span class="badge bg-{{ choice.color }} rounded-pill">{{ choice.votes }}</span>
+                    <span class="badge rounded-pill">{{ choice.percent|floatformat:'0' }}%</span>
+                    <span class="badge mx-2 bg-{{ choice.color }} rounded-pill">{{ choice.votes }}</span>
                 </li>
             {% endfor %}
         </ul>

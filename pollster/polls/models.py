@@ -3,6 +3,7 @@ import random
 from django.db import models
 from django.contrib import admin
 from django.utils import timezone
+from django.db.models import Sum
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
@@ -19,26 +20,24 @@ class Question(models.Model):
 
     @property
     def get_total_votes(self):
-        total_votes = [choice.votes for choice in self.choice_set.all()]
-        total_votes = sum(total_votes)
-        return total_votes
+        return self.choice_set.aggregate(Sum('votes'))['votes__sum'] or 0
 
     def get_choices_with_params(self):
         res = []
         choices = self.choice_set.all().order_by('-votes')
 
-        colors = ['warning', 'danger', 'success', 'primary',]
+        colors = ['secondary', 'danger', 'success', 'primary',]
         while len(colors) < choices.count(): colors.extend(colors)
             
         for choice in choices:
-            d = {}
-            d['id'] = choice.id
-            d['text'] = choice.choice_text
-            d['votes'] = choice.votes
+            d = {
+                'id': choice.id,
+                'text': choice.choice_text,
+                'votes': choice.votes,
+                'color': colors.pop(),
+                'percent': 0,
+            }
 
-            d['color'] = colors.pop()
-
-            d['percent'] = 0
             if d['votes'] != 0:
                 d['percent'] = (d['votes'] / self.get_total_votes) * 100
 
