@@ -1,5 +1,5 @@
 import datetime
-import random
+from itertools import cycle
 from django.db import models
 from django.contrib import admin
 from django.utils import timezone
@@ -25,21 +25,17 @@ class Question(models.Model):
     def get_choices_with_params(self):
         res = []
         choices = self.choice_set.all().order_by('-votes')
-
-        colors = ['secondary', 'danger', 'success', 'primary',]
-        while len(colors) < choices.count(): colors.extend(colors)
+        colors = cycle(['primary', 'success', 'danger', 'secondary',])
             
         for choice in choices:
             d = {
                 'id': choice.id,
                 'text': choice.choice_text,
                 'votes': choice.votes,
-                'color': colors.pop(),
-                'percent': 0,
+                'color': next(colors),
             }
 
-            if d['votes'] != 0:
-                d['percent'] = (d['votes'] / self.get_total_votes) * 100
+            d['percent'] = (d['votes'] / self.get_total_votes) * 100 if d['votes'] else 0
 
             res.append(d)
 
