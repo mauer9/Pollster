@@ -2,22 +2,26 @@
 {% block content %}
     <form action="" method='post'>
         {% csrf_token %}
-        <h1 class="text-white">Login</h1>
+        <h1 class="text-white mb-5">Sign in to Pollster</h1>
         {% if error_message %}
-            <p class="text-white">
-                <strong>{{ error_message }}</strong>
-            </p>
+            <p class="rounded border-start border-danger border-5 bg-danger bg-opacity-50 px-1">{{ error_message }}</p>
         {% endif %}
-        <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email"
-                   class="form-control"
-                   id="exampleInputEmail1"
-                   aria-describedby="emailHelp">
+        <p>{{ x }}</p>
+        <div class="form-floating mb-3 text-dark">
+            <input type="text"
+                   name="username"
+                   id="username"
+                   placeholder="Username"
+                   class="form-control">
+            <label for="username">Username</label>
         </div>
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+        <div class="form-floating mb-3 text-dark">
+            <input type="password"
+                   name="password"
+                   id="password"
+                   placeholder="Password"
+                   class="form-control">
+            <label for="password">Password</label>
         </div>
         <div class="mb-3">
             <p>
