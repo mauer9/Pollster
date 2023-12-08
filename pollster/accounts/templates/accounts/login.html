@@ -6,7 +6,7 @@
         {% if error_message %}
             <p class="rounded border-start border-danger border-5 bg-danger bg-opacity-50 px-1">{{ error_message }}</p>
         {% endif %}
-        <p>{{ x }}</p>
+        {% if debug_message %}<p>{{ debug_message }}</p>{% endif %}
         <div class="form-floating mb-3 text-dark">
             <input type="text"
                    name="username"
@@ -25,7 +25,7 @@
         </div>
         <div class="mb-3">
             <p>
-                Don't have an account? <a href="{% url 'accounts:register' %}" class="link-light link-offset-2">Sign up</a>
+                Don't have an account? <a href="{% url 'accounts:signup' %}" class="link-light link-offset-2">Sign up</a>
             </p>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
