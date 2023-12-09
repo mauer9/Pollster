@@ -1,24 +1,24 @@
 from django.contrib import admin
-from .models import Question, Choice
+from .models import Poll, Choice, Vote
 
 
 class ChoiceAdmin(admin.ModelAdmin):
-    fields = ['choice_text', 'question_text', 'votes']
+    fields = ['poll', 'text']
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
     extra = 1
 
-class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['question_text', 'pub_date', 'recently_published']
+class PollAdmin(admin.ModelAdmin):
+    list_display = ['text', 'pub_date', 'recently_published']
     list_filter = ['pub_date']
-    search_fields = ['question_text']
+    search_fields = ['text']
     fieldsets = [
-        ('Text information', {'fields': ['question_text']}),
+        ('Text information', {'fields': ['text']}),
         ('Date information', {'fields': ['pub_date']})
     ]
     inlines = [ChoiceInline]
 
 
-admin.site.register(Question, QuestionAdmin)
+admin.site.register(Poll, PollAdmin)
 admin.site.register(Choice, ChoiceAdmin)

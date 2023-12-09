@@ -1,12 +1,13 @@
 import datetime
 from itertools import cycle
 from django.db import models
-from django.contrib import admin
+from django.db.models import Count
 from django.utils import timezone
-from django.db.models import Sum
+from django.contrib import admin
+from django.contrib.auth.models import User
 
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
+class Poll(models.Model):
+    text = models.CharField(max_length=200)
     pub_date = models.DateField('date published')
 
     @admin.display(
@@ -20,18 +21,20 @@ class Question(models.Model):
 
     @property
     def get_total_votes(self):
-        return self.choice_set.aggregate(Sum('votes'))['votes__sum'] or 0
+        return self.vote_set.count()
 
     def get_choices_with_params(self):
         res = []
-        choices = self.choice_set.all().order_by('-votes')
+        choices = self.choice_set.all()
+        choices = choices.annotate(vote_count=Count('vote'))
+        choices = choices.order_by("-vote_count")
         colors = cycle(['info', 'danger', 'success', 'secondary',])
             
         for choice in choices:
             d = {
                 'id': choice.id,
-                'text': choice.choice_text,
-                'votes': choice.votes,
+                'text': choice.text,
+                'votes': choice.vote_count,
                 'color': next(colors),
             }
 
@@ -41,11 +44,18 @@ class Question(models.Model):
 
         return res
 
-    def __str__(self): return self.question_text
+    def __str__(self): return self.text
 
 class Choice(models.Model):
-    question_text = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    text = models.CharField(max_length=200)
 
-    def __str__(self): return self.choice_text
+    def __str__(self): return self.text
+
+class Vote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user} - {self.poll} - {self.choice}'

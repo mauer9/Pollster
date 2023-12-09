@@ -78,7 +78,7 @@ WSGI_APPLICATION = "pollster.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "mysite",
+        "NAME": "polls",
         "USER": "mysiteadmin",
         "PASSWORD": "pass",
         "HOST": "127.0.0.1",
