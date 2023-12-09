@@ -12,6 +12,7 @@ def login(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             auth_login(request, user)
+            return redirect('polls:index')
         else:
             context['error_message'] = 'Sorry, your email and password did not match'
     return render(request, 'accounts/login.html', context)

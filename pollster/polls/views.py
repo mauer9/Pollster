@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
@@ -33,6 +34,7 @@ class DetailView(generic.DetailView):
         context['choices'] = choices
         return context
 
+@login_required
 def vote(request, pk):
     question = get_object_or_404(Question, pk=pk)
     try:
