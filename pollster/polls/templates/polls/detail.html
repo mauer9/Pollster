@@ -28,17 +28,27 @@
             {% for choice in choices %}
                 <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-dark-subtle">
                     <div class="ms-3 me-auto">
-                        <input type="radio"
-                               name="choice"
-                               id="{{ forloop.counter }}"
-                               value="{{ choice.id }}">
-                        <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.text }}</label>
+                        {% if request.user.is_authenticated %}
+                            <input type="radio"
+                                   name="choice"
+                                   id="{{ forloop.counter }}"
+                                   value="{{ choice.id }}">
+                            <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.text }}</label>
+                        {% else %}
+                            <p class="mx-2 my-auto text-white">{{ choice.text }}</p>
+                        {% endif %}
                     </div>
                     <span class="badge rounded-pill">{{ choice.percent|floatformat:'0' }}%</span>
                     <span class="badge mx-2 bg-{{ choice.color }} rounded-pill">{{ choice.votes }}</span>
                 </li>
             {% endfor %}
         </ul>
-        <input type="submit" value="Vote" class="btn btn-primary">
+        {% if request.user.is_authenticated %}
+            <input type="submit" value="Vote" class="btn btn-primary">
+        {% else %}
+            <p class="text-white">
+                <small>You need to <a href="{% url 'accounts:login' %}" class="link-light link-offset-2">log in</a> to vote</small>
+            </p>
+        {% endif %}
     </form>
 {% endblock %}
