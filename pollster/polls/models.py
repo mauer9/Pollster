@@ -25,7 +25,7 @@ class Question(models.Model):
     def get_choices_with_params(self):
         res = []
         choices = self.choice_set.all().order_by('-votes')
-        colors = cycle(['primary', 'success', 'danger', 'secondary',])
+        colors = cycle(['info', 'danger', 'success', 'secondary',])
             
         for choice in choices:
             d = {

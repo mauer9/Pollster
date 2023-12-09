@@ -4,12 +4,8 @@
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock custom_css %}
 {% block content %}
-    <!-- <div> -->
-    <h1>PollMe - Get Started!</h1>
-    <h3>Your Voice Matters!</h3>
+    <h1 class="text-white pt-5">PollMe - Get Started!</h1>
+    <h3 class="text-white">Your Voice Matters!</h3>
     <hr>
-    <a class="btn btn-light btn-lg"
-       href="{% url 'accounts:login' %}"
-       role="button">Get Started !</a>
-    <!-- </div> -->
+    <a class="btn btn-light" href="{% url 'accounts:login' %}" role="button">Get Started !</a>
 {% endblock %}

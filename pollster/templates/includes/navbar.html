@@ -11,24 +11,31 @@
                     <a class="nav-link" href="{% url 'polls:index' %}">Polls</a>
                 </li>
             </ul>
-            <ul class="navbar-nav ms-auto">
+            <form class="navbar-nav ms-auto">
                 {% if request.user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">My votes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">{{ request.user.first_name }}</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#">My votes</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a>
+                            </li>
+                        </ul>
                     </li>
                 {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link bg-primary rounded text-white ms-2 my-1 py-1"
-                           href="{% url 'accounts:signup' %}">Sign up</a>
-                    </li>
+                    <a class="btn" href="{% url 'accounts:login' %}">Login</a>
+                    <a class="btn btn-dark" href="{% url 'accounts:signup' %}">Sign up</a>
                 {% endif %}
-            </ul>
+            </form>
         </div>
     </div>
 </nav>
