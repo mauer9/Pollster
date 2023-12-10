@@ -2,15 +2,5 @@
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <form action="" method='post'>
-        {% csrf_token %}
-        <h1 class="text-white mb-5">Sign up to Pollster</h1>
-        {% crispy form %}
-        <div class="mb-3">
-            <p>
-                Already have an account? Sign In <a href="{% url 'accounts:login' %}" class="link-light link-offset-2">Log In</a>
-            </p>
-        </div>
-        <button type="submit" class="btn btn-primary">Sign Up</button>
-    </form>
+    {% crispy form %}
 {% endblock %}
