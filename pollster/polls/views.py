@@ -37,9 +37,9 @@ class DetailView(generic.DetailView):
 @login_required
 def vote(request, pk):
     poll = get_object_or_404(Poll, pk=pk)
+    user = request.user
     try:
-        selected_choice = poll.choice_set.get(
-            pk=request.POST["choice"])
+        choice = poll.choice_set.get(pk=request.POST["choice"])
     except (KeyError, Choice.DoesNotExist):
         return render(
             request,
@@ -50,6 +50,5 @@ def vote(request, pk):
             }
         )
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
+        Vote.objects.create(user=user, poll=poll, choice=choice)
         return HttpResponseRedirect(reverse("polls:detail", args=(poll.id,)))
