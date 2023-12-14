@@ -1,5 +1,69 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
 {% block content %}
-    {% crispy form %}
+    <h1 class="text-white mb-5">Sign up to Pollster</h1>
+    <form method="post" class="row g-3">
+        {% csrf_token %}
+        <p>{{ x }}</p>
+        <div class="col-md-6">
+            <input type="text"
+                   name="first_name"
+                   maxlength="100"
+                   placeholder="First name"
+                   value="{{ first_name_value }}"
+                   class="form-control {{ first_name_css }}">
+            {% if first_name_feedback %}<div class="invalid-feedback">{{ first_name_feedback }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+            <input type="text"
+                   name="last_name"
+                   maxlength="100"
+                   placeholder="Last name"
+                   value="{{ last_name_value }}"
+                   class="form-control {{ last_name_css }}">
+            {% if last_name_feedback %}<div class="invalid-feedback">{{ last_name_feedback }}</div>{% endif %}
+        </div>
+        <div class="col-md-12">
+            <input type="email"
+                   name="email"
+                   maxlength="100"
+                   placeholder="Email*"
+                   value="{{ email_value }}"
+                   class="form-control {{ email_css }}"
+                   required>
+            {% if email_feedback %}<div class="invalid-feedback">{{ email_feedback }}</div>{% endif %}
+        </div>
+        <div class="col-md-12">
+            <input type="text"
+                   name="username"
+                   maxlength="100"
+                   placeholder="Username*"
+                   value="{{ username_value }}"
+                   class="form-control {{ username_css }}"
+                   required>
+            {% if username_feedback %}<div class="invalid-feedback">{{ username_feedback }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+            <input type="password"
+                   name="password"
+                   maxlength="100"
+                   placeholder="Password*"
+                   value="{{ password_value }}"
+                   class="form-control {{ password_css }}"
+                   required>
+            {% if password_feedback %}<div class="invalid-feedback">{{ password_feedback }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+            <input type="password"
+                   name="confirm_password"
+                   maxlength="100"
+                   placeholder="Confirm password*"
+                   value="{{ confirm_password_value }}"
+                   class="form-control {{ confirm_password_css }}"
+                   required>
+            {% if confirm_password_feedback %}<div class="invalid-feedback">{{ confirm_password_feedback }}</div>{% endif %}
+        </div>
+        <div class="col-md-12">
+            <button class="btn btn-primary" type="submit">Sign in</button>
+        </div>
+    </form>
 {% endblock %}

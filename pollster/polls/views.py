@@ -34,7 +34,7 @@ class DetailView(generic.DetailView):
         context['choices'] = choices
         return context
 
-@login_required
+@login_required(redirect_field_name=None)
 def vote(request, pk):
     poll = get_object_or_404(Poll, pk=pk)
     user = request.user
