@@ -1,5 +1,6 @@
-# Django Polls project
+# Django Pollster
 
 from django documentation tutorial
 
-- Utilizes PostgreSQL
+- DB on PostgreSQL
+- Registration and Authentication
