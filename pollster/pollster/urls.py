@@ -24,5 +24,5 @@ urlpatterns = [
     path("accounts/", include("accounts.urls"), name="accounts"),
     path("admin/", admin.site.urls, name="admin"),
     path("polls/", include("polls.urls"), name="index"),
-    re_path(".*", lambda request: redirect("/")),
+    re_path(".*", lambda _: redirect("/")),
 ]

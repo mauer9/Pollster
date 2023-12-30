@@ -7,24 +7,24 @@ from faker import Faker
 fake = Faker()
 
 
-def seed_polls(n = 5, overwrite = False):
+def seed_polls(n = 5):
     """
     Create dummy polls
 
     Args:
         n (int): number of polls to create, 5 by default
-        overwrite (bool): overwrite existing polls?
     """
-    if overwrite: Poll.objects.all().delete()
 
-    return [
+    polls = [
         Poll.objects.create(
             text=fake.sentence(), pub_date=timezone.now()
         )
         for _ in range(n)
     ]
+    print('seed polls success')
+    return polls
 
-def seed_choices(n = 5, polls = []):
+def seed_choices(n = 5, polls = None):
     """
     Create dummy choices for polls
 
@@ -38,8 +38,9 @@ def seed_choices(n = 5, polls = []):
     for poll in polls:
         for _ in range(n):
             Choice.objects.create(poll = poll, text = fake.word())
+    print('seed choice success')
 
-def seed_votes(n = 30, polls = []):
+def seed_votes(n = 30, polls = None):
     """
     Create votes for polls and choices
 
@@ -52,21 +53,25 @@ def seed_votes(n = 30, polls = []):
             if not specified, create votes for all polls
     """
     if not polls: polls = Poll.objects.all()
+    user = User.objects.get(pk=1)
 
     for poll in polls:
         choices = poll.choice_set.all()
         for _ in range(n):
             choice = random.choice(choices)
-            Vote.objects.create(user=1, poll=poll, choice=choice)
+            Vote.objects.create(user=user, poll=poll, choice=choice)
+    print('seed votes success')
 
-def seed_all(questions_n = 5, choices_n = 2, overwrite = False, new_only = True):
+def seed_all(polls_n = 5, choices_n = 5, votes_n = 30):
     """
-    seed questions and choices
-    """
-    # new_questions = seed_questions(questions_n, overwrite)
-    #
-    # if new_only:
-    #     seed_choices(choices_n, new_questions)
-    # else:
-    #     seed_choices(choices_n)
+    Create polls, choices and votes
 
+    Args:
+        polls_n (int): number of polls to create
+        choices_n (int): number of choices to create gor each poll
+        votes_n (int): number of votes to create for each poll
+    """
+    polls = seed_polls(polls_n)
+    seed_choices(choices_n, polls)
+    seed_votes(votes_n, polls)
+    print('seed all success')

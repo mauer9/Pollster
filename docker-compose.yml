@@ -1,0 +1,25 @@
+version: '3'
+services:
+  web:
+    build: .
+    container_name: django
+    command: poetry run python manage.py runserver 0.0.0.0:8088
+    env_file:
+      - ./docker.env
+    volumes:
+      - .:/code
+    ports:
+      - "8088:8088"
+    depends_on:
+      - psql-docker
+  
+  psql-docker:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: "pass"
+      PGPORT: 5433
+    expose:
+      - "5433"
+    ports:
+      - "5433:5433"
