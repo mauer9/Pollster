@@ -1,0 +1,16 @@
+services:
+  db:
+    container_name: db
+    image: postgres:16
+    env_file: ./.env.dev
+    expose:
+      - 5433
+  server:
+    container_name: server
+    build: .
+    command: poetry run gunicorn pollster.wsgi -b :8088
+    env_file: ./.env.dev
+    ports:
+      - 8088:8088
+    depends_on:
+      - db

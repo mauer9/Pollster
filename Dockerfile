@@ -29,12 +29,12 @@ RUN apt-get update \
   && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
   && pip install "poetry==$POETRY_VERSION" && poetry --version
 
-WORKDIR /code
-COPY pyproject.toml poetry.lock /code/
+WORKDIR /app
 
+COPY pyproject.toml poetry.lock /app/
 RUN poetry install
+
 COPY . .
 
-COPY entrypoint.sh /code/entrypoint.sh
-RUN chmod +x /code/entrypoint.sh
-ENTRYPOINT ["/code/entrypoint.sh"]
+COPY ./entrypoint.sh /app/
+ENTRYPOINT ["/app/entrypoint.sh"]
