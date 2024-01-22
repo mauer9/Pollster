@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1 class="text-white mb-5">Sign up to Pollster</h1>
+    <h1 class="text-white mb-5">Sign in to Pollster</h1>
     <form method='post' class="row g-3">
         {% csrf_token %}
         {% if error_message %}
@@ -24,8 +24,13 @@
                    class="form-control {{ error_css }}"
                    required>
         </div>
+        <div class="mb-3">
+            <p>
+                Don't have an account? <a href="{% url 'accounts:signup' %}" class="link-light link-offset-2">Sign up</a>
+            </p>
+        </div>
         <div class="col-md-12">
-            <button class="btn btn-primary" type="submit">Login</button>
+            <button class="btn btn-primary" type="submit">Sign in</button>
         </div>
     </form>
 {% endblock %}
