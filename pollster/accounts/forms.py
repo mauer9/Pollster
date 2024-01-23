@@ -16,15 +16,19 @@ class SignupForm(forms.ModelForm):
 
     def clean_username(self):
         username = self.cleaned_data.get("username")
-        user = User.objects.filter(username=username)
-        if user:
+        if len(username) <= 3:
             self.add_error(
-                "username", "That user is already taken , please select another"
+                "username",
+                "That username is too short. It must contain at least 4 characters.",
             )
         elif not re.search(r"^\w+$", username):
             self.add_error(
                 "username",
                 "Username can only contain alphanumeric characters and the underscore.",
+            )
+        elif User.objects.filter(username=username):
+            self.add_error(
+                "username", "That user is already taken , please select another."
             )
         return username
 
@@ -37,7 +41,7 @@ class SignupForm(forms.ModelForm):
             self.add_error("password", e)
 
         if password != confirm_password:
-            self.add_error("confirm_password", "Password does not match")
+            self.add_error("confirm_password", "Password does not match.")
 
         return confirm_password
 
