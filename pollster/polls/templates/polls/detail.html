@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
     <form action="{% url 'polls:vote' poll.id %}" method='post'>
-        <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>
         {% csrf_token %}
+        <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>
         <h1 class="text-white">{{ poll.text }}</h1>
         <p class="text-white">
-            <small>date: {{ poll.pub_date }}, <b>{{ poll.get_total_votes }}</b> votes</small>
+            <small>{{ poll.pub_date }}, <b>{{ poll.get_total_votes }}</b> votes</small>
         </p>
         {% if error_message %}
             <p class="text-white">
@@ -32,7 +32,10 @@
                             <input type="radio"
                                    name="choice"
                                    id="{{ forloop.counter }}"
-                                   value="{{ choice.id }}">
+                                   class="form-check-input"
+                                   value="{{ choice.id }}"
+                                   required
+                                   {% if choice.id == user_choice.id %}checked{% endif %}>
                             <label for="{{ forloop.counter }}" class="mx-2 text-white">{{ choice.text }}</label>
                         {% else %}
                             <p class="mx-2 my-auto text-white">{{ choice.text }}</p>
