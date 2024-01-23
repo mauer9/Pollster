@@ -41,7 +41,7 @@ def signup(request):
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            del cleaned_data["confirm_password"]
+            cleaned_data.pop("confirm_password", None)
             user = User.objects.create_user(**cleaned_data)
             auth_login(request, user)
             return redirect("polls:index")

@@ -14,11 +14,8 @@ class SignupForm(forms.ModelForm):
         model = User
         fields = ["username", "first_name", "last_name", "email", "password"]
 
-    def clean(self):
-        cleaned_data = super().clean()
-
-        # username validation
-        username = cleaned_data.get("username")
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
         user = User.objects.filter(username=username)
         if user:
             self.add_error(
@@ -29,25 +26,20 @@ class SignupForm(forms.ModelForm):
                 "username",
                 "Username can only contain alphanumeric characters and the underscore.",
             )
-        self.add_error("username", self.instance)
+        return username
 
-        # password validation
-        password = cleaned_data.get("password")
-        confirm_password = cleaned_data.get("confirm_password")
-        user = User(
-            username=cleaned_data.get("username"),
-            first_name=cleaned_data.get("first_name"),
-            last_name=cleaned_data.get("last_name"),
-            email=cleaned_data.get("email"),
-            password=cleaned_data.get("password"),
-        )
+    def clean_confirm_password(self):
+        password = self.cleaned_data.get("password")
+        confirm_password = self.cleaned_data.pop("confirm_password")
         try:
-            validate_password(password, user)
+            validate_password(password, User(**self.cleaned_data))
         except ValidationError as e:
             self.add_error("password", e)
 
         if password != confirm_password:
             self.add_error("confirm_password", "Password does not match")
+
+        return confirm_password
 
 
 class LoginForm(forms.ModelForm):
