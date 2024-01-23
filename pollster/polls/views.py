@@ -50,20 +50,40 @@ class DetailView(generic.DetailView):
 
 
 @login_required(redirect_field_name=None)
-def vote(request, pk):
-    poll = get_object_or_404(Poll, pk=pk)
+def vote(request, id):
+    redirect = HttpResponseRedirect(reverse("polls:detail", args=(id,)))
+
+    if request.method != "POST":
+        return redirect
+
+    poll = get_object_or_404(Poll, id=id)
     user = request.user
-    try:
-        choice = poll.choice_set.get(pk=request.POST["choice"])
-    except (KeyError, Choice.DoesNotExist):
+    choice = poll.choice_set.filter(id=request.POST["choice"]).first()
+    # poll without choices
+    if not choice:
         return render(
             request,
             "polls/detail.html",
-            {
-                "question": poll,
-                "error_message": "You did not select a choice"
-            }
+            {"question": poll, "error_message": "You did not select a choice"},
         )
-    else:
+
+    # admin can vote unlimited time
+    if user.is_superuser:
         Vote.objects.create(user=user, poll=poll, choice=choice)
-        return HttpResponseRedirect(reverse("polls:detail", args=(poll.id,)))
+
+        return redirect
+
+    # if among all votes
+    if all_votes := Vote.objects.filter(user=user):
+        # user voted for current poll
+        if poll_vote := all_votes.filter(poll=poll).first():
+            # then update the vote
+            poll_vote.choice = choice
+            poll_vote.save()
+
+            return redirect
+
+    # user do not have any votes or did not vote for current poll
+    Vote.objects.create(user=user, poll=poll, choice=choice)
+
+    return redirect
