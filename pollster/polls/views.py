@@ -3,24 +3,22 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.utils import timezone
-from django.views import generic
+from django.views.generic import ListView, DetailView
 
 from .models import Poll, Choice, Vote
 
 
-class IndexView(generic.ListView):
+class IndexView(ListView):
     template_name = "polls/index.html"
     context_object_name = "polls"
-
-    def get_queryset(self):
-        queryset = Poll.objects.filter(
-            pub_date__lte=timezone.now(), choice__isnull=False
-        )
-        queryset = queryset.distinct()
-        return queryset.order_by("-pub_date")
+    queryset = (
+        Poll.objects.filter(pub_date__lte=timezone.now(), choice__isnull=False)
+        .distinct()
+        .order_by("-pub_date")
+    )
 
 
-class DetailView(generic.DetailView):
+class DetailView(DetailView):
     model = Poll
     template_name = "polls/detail.html"
     context_object_name = "poll"
