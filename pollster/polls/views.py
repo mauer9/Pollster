@@ -3,12 +3,12 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import ListView, DetailView
+from django.views import generic
 
 from .models import Poll, Choice, Vote
 
 
-class IndexView(ListView):
+class IndexView(generic.ListView):
     template_name = "polls/index.html"
     context_object_name = "polls"
     queryset = (
@@ -18,7 +18,7 @@ class IndexView(ListView):
     )
 
 
-class DetailView(DetailView):
+class DetailView(generic.DetailView):
     model = Poll
     template_name = "polls/detail.html"
     context_object_name = "poll"
@@ -54,15 +54,16 @@ def vote(request, pk):
     user = request.user
     poll = get_object_or_404(Poll, pk=pk)
     choices = request.POST.getlist("choice")
+    action = request.POST.get("action")
 
     # do not delete admin votes
     votes = Vote.objects.filter(user=user, poll=poll)
     if not user.is_superuser and votes:
         votes.delete()
 
-    # create votes
-    for choice in choices or []:
-        choice = Choice.objects.get(pk=choice)
-        Vote.objects.create(user=user, poll=poll, choice=choice)
-
+    # create votes only if clicked 'Vote' button
+    if action == "vote":
+        for choice in choices or []:
+            choice = Choice.objects.get(pk=choice)
+            Vote.objects.create(user=user, poll=poll, choice=choice)
     return redirect

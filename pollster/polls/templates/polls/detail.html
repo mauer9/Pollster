@@ -46,7 +46,8 @@
             {% endfor %}
         </ul>
         {% if request.user.is_authenticated %}
-            <input type="submit" value="Vote" class="btn btn-primary">
+            <button type="submit" name="action" value="vote" class="btn btn-primary">Vote</button>
+            <button type="submit" name="action" value="clear" class="btn btn-dark">Clear votes</button>
         {% else %}
             <p class="text-white">
                 <small>You need to <a href="{% url 'accounts:login' %}" class="link-light link-offset-2">log in</a> to vote</small>
