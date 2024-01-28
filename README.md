@@ -11,6 +11,7 @@ There is a search option for polls. Also user can filter polls by name,
 publish date, and by number of voted. Pagination will work even after applying
 filter.
 
+✅Password validation
 Dependencies:
 
 - Python v3.11

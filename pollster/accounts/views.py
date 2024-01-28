@@ -4,11 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 
-from .forms import SignupForm, LoginForm
+from .forms import SignupForm, LoginForm, PasswordChangeForm
 from polls.models import Poll, Vote
 
 
@@ -22,11 +22,13 @@ def signup(request):
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
+            # User.objects.create_user() do not take 'confirm_password'
             cleaned_data.pop("confirm_password", None)
             user = User.objects.create_user(**cleaned_data)
             auth_login(request, user)
             return redirect("polls:index")
         else:
+            # if there is errors, pass errors to template
             for field in form.fields:
                 context[field + "_value"] = request.POST[field]
                 context[field + "_css"] = "is-valid"
@@ -64,15 +66,15 @@ def logout(request):
     return redirect("home")
 
 
-class IndexView(LoginRequiredMixin, ListView):
+class MyPolls(LoginRequiredMixin, ListView):
+    """Show polls that user voted for"""
+
     redirect_field_name = None
     template_name = "accounts/votes.html"
     context_object_name = "polls"
 
     def get_queryset(self):
-        """
-        queryset of polls that user voted for
-        """
+        """queryset of polls that user voted for"""
         if votes := Vote.objects.filter(user=self.request.user):
             polls = set()
             for vote in votes:
@@ -104,3 +106,27 @@ class IndexView(LoginRequiredMixin, ListView):
 
         context["polls"] = polls
         return context
+
+
+class PasswordChangeView(LoginRequiredMixin, TemplateView):
+    redirect_field_name = None
+    template_name = "accounts/change-password.html"
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        request = self.request
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+
+        if form.is_valid():
+            form.save()
+            context["message"] = "Password successfully updated"
+        else:
+            # if there is errors, pass errors to template
+            for field in form.fields:
+                context[field + "_value"] = request.POST[field]
+                context[field + "_css"] = "is-valid"
+                if field in form.errors:
+                    context[field + "_css"] = "is-invalid"
+                    context[field + "_feedback"] = form.errors[field]
+
+        return self.render_to_response(context)
