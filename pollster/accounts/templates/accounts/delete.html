@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if message %}<h1 class="text-white mb-5">{{ message }}</h1>{% endif %}
+    {% if request.user.is_authenticated %}
+        <h1 class="text-white mb-5">Delete account</h1>
+        <h3 class="text-white mb-5">
+            Do you <i>really</i> want to delete your account?
+        </h3>
+        <form method='post' class="row g-3">
+            {% csrf_token %}
+            <a class="col-md-6 btn btn-success" href="{% url 'home' %}">No, I do not</a>
+            <button class="col-md-6 btn btn-dark" type="submit">Delete my account</button>
+        </form>
+    {% endif %}
+{% endblock %}

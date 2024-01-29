@@ -1,5 +1,5 @@
 from collections import defaultdict
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
@@ -114,7 +114,6 @@ class PasswordChangeView(LoginRequiredMixin, TemplateView):
 
     def post(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
-        request = self.request
         form = PasswordChangeForm(user=request.user, data=request.POST)
 
         if form.is_valid():
@@ -129,4 +128,20 @@ class PasswordChangeView(LoginRequiredMixin, TemplateView):
                     context[field + "_css"] = "is-invalid"
                     context[field + "_feedback"] = form.errors[field]
 
+        return self.render_to_response(context)
+
+
+class DeleteAccountView(TemplateView):
+    template_name = "accounts/delete.html"
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        try:
+            user = get_object_or_404(User, pk=request.user.pk)
+            user.delete()
+            context["message"] = "The user is deleted"
+        except User.DoesNotExist:
+            context["message"] = "User doesnot exist"
+        except Exception as e:
+            context["message"] = e
         return self.render_to_response(context)
