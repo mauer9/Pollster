@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
@@ -11,6 +12,7 @@ from .models import Poll, Choice, Vote
 class IndexView(generic.ListView):
     template_name = "polls/index.html"
     context_object_name = "polls"
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = Poll.objects.filter(
