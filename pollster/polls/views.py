@@ -11,11 +11,21 @@ from .models import Poll, Choice, Vote
 class IndexView(generic.ListView):
     template_name = "polls/index.html"
     context_object_name = "polls"
-    queryset = (
-        Poll.objects.filter(pub_date__lte=timezone.now(), choice__isnull=False)
-        .distinct()
-        .order_by("-pub_date")
-    )
+
+    def get_queryset(self):
+        queryset = Poll.objects.filter(
+            pub_date__lte=timezone.now(), choice__isnull=False
+        ).distinct()
+        queryset = queryset.order_by("pub_date")
+        sort = self.request.GET.get("sort")
+        match sort:
+            case "-date":
+                queryset = queryset.order_by("-pub_date")
+            case "name":
+                queryset = queryset.order_by("text")
+            case "-name":
+                queryset = queryset.order_by("-text")
+        return queryset
 
 
 class DetailView(generic.DetailView):

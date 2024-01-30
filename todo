@@ -1,0 +1,33 @@
+FEATURES:
+|for admin:
+|view users list
+|crud functionality
+|
+|for regular users:
+|polls pagination
+|users can add their polls
+|polls sort by votes
+|̶u̶n̶v̶o̶t̶e̶
+|̶v̶o̶t̶e̶d̶ ̶a̶n̶d̶ ̶n̶o̶t̶ ̶v̶o̶t̶e̶d̶ ̶p̶o̶l̶l̶s̶ ̶u̶i̶
+|̶v̶i̶e̶w̶ ̶m̶y̶ ̶v̶o̶t̶e̶s̶
+|̶c̶h̶a̶n̶g̶e̶ ̶p̶a̶s̶s̶w̶o̶r̶d̶
+|̶d̶e̶l̶e̶t̶e̶ ̶a̶c̶c̶o̶u̶n̶t̶
+
+UNIT TESTS
+|regular user cannot vote multiple times
+|login and signup works properly
+
+README
+|docker compose tutorial
+
+
+IDEAS
+|http requests testing with jmeter
+|django's Q class
+
+|rename accounts app to registration?
+|template defaults are set on registration/login.html
+|https://docs.djangoproject.com/en/5.0/topics/auth/default/
+|also, using CBV django.contrib.auth.LoginView instead of FBV
+
+s/./&̶/g

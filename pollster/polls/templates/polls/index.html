@@ -1,13 +1,27 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
     {% if polls %}
-        <div class="list-group">
-            {% for poll in polls %}
-                <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start">
-                    <a class="ms-2 me-auto" href="{% url 'polls:detail' poll.id %}">{{ poll.text }}</a>
-                    <span class="badge bg-primary rounded-pill ms-2">{{ poll.vote_set.count }}</span>
-                </li>
-            {% endfor %}
+        <div class="polls-list">
+            <h1 class="text-white mb-5">Welcome!</h1>
+            <a class="btn btn-{% if 'date' in request.GET %}warning{% else %}primary{% endif %} btn-sm lh-lg"
+               href="?sort={% if request.GET.sort == 'date' %}-date{% else %}date{% endif %}"
+               role="button">
+                <img src="{% static 'img/sort-date.png' %}" width='20px' height='20px' />
+            Date</a>
+            <a class="btn btn-{% if 'name' in request.GET %}warning{% else %}primary{% endif %} btn-sm lh-lg"
+               href="?sort={% if request.GET.sort == 'name' %}-name{% else %}name{% endif %}"
+               role="button">
+                <img src="{% static 'img/sort-name.png' %}" width='20px' height='20px' />
+            Name</a>
+            <div class="list-group mt-3">
+                {% for poll in polls %}
+                    <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start">
+                        <a class="ms-2 me-auto" href="{% url 'polls:detail' poll.id %}">{{ poll.text|truncatewords:5 }}</a>
+                        <span class="badge bg-primary rounded-pill ms-2">{{ poll.vote_set.count }}</span>
+                    </li>
+                {% endfor %}
+            </div>
         </div>
     {% else %}
         <p>There is no polls</p>

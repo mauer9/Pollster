@@ -1,3 +1,6 @@
 .wrapper > *{
     width: 600px;
 }
+.polls-list {
+    width: 500px;
+}
