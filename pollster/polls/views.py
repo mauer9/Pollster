@@ -14,6 +14,32 @@ class IndexView(generic.ListView):
     context_object_name = "polls"
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        sorting_buttons = {
+            "date": {"btn": "btn-primary", "href": "-date", "arrow": "img/up.png"},
+            "name": {"btn": "btn-primary", "href": "name", "arrow": "img/up.png"},
+            "votes": {"btn": "btn-primary", "href": "votes", "arrow": "img/up.png"},
+        }
+
+        sort = self.request.GET.get("sort", "")
+
+        for key, button in sorting_buttons.items():
+            if sort == key:
+                button["btn"] = "btn-warning"
+                button["href"] = f"-{key}"
+            if sort == f"-{key}":
+                button["btn"] = "btn-warning"
+                button["href"] = key
+                button["arrow"] = "img/down.png"
+
+        for key, btn in sorting_buttons.items():
+            for name, value in btn.items():
+                context[f"{key}_{name}"] = value
+
+        return context
+
     def get_queryset(self):
         queryset = Poll.objects.filter(
             pub_date__lte=timezone.now(), choice__isnull=False
