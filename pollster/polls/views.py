@@ -18,6 +18,8 @@ class IndexView(generic.ListView):
         queryset = Poll.objects.filter(
             pub_date__lte=timezone.now(), choice__isnull=False
         ).distinct()
+
+        # sort queryset by date (by default) or by name
         queryset = queryset.order_by("pub_date")
         sort = self.request.GET.get("sort")
         match sort:
@@ -27,6 +29,10 @@ class IndexView(generic.ListView):
                 queryset = queryset.order_by("text")
             case "-name":
                 queryset = queryset.order_by("-text")
+            case "votes":
+                queryset = sorted(queryset, key=lambda x: x.total_votes, reverse=True)
+            case "-votes":
+                queryset = sorted(queryset, key=lambda x: x.total_votes)
         return queryset
 
 

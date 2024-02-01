@@ -17,7 +17,7 @@ class Poll(models.Model):
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
 
     @property
-    def get_total_votes(self):
+    def total_votes(self):
         return self.vote_set.count()
 
     def get_choices_with_params(self):
@@ -42,9 +42,7 @@ class Poll(models.Model):
                 "color": next(colors),
             }
 
-            d["percent"] = (
-                (d["votes"] / self.get_total_votes) * 100 if d["votes"] else 0
-            )
+            d["percent"] = (d["votes"] / self.total_votes) * 100 if d["votes"] else 0
 
             res.append(d)
 

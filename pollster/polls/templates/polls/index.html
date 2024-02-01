@@ -14,6 +14,11 @@
                role="button">
                 <img src="{% static 'img/sort-name.png' %}" width='20px' height='20px' />
             Name</a>
+            <a class="btn btn-{% if 'vote' in request.GET %}warning{% else %}primary{% endif %} btn-sm lh-lg"
+               href="?sort={% if request.GET.sort == 'votes' %}-votes{% else %}votes{% endif %}"
+               role="button">
+                <img src="{% static 'img/sort-voted.png' %}" width='20px' height='20px' />
+            Votes</a>
             <div class="list-group mt-3">
                 {% for poll in polls %}
                     <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start">
@@ -26,23 +31,26 @@
                 <ul class="pagination pagination-sm">
                     {% if page_obj.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?page=1">
+                            <a class="page-link bg-dark-subtle" href="?page=1">
                                 <span>&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                            <a class="page-link bg-dark-subtle"
+                               href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
                         </li>
                     {% endif %}
                     <li class="page-item disabled">
-                        <a class="page-link" href="#">{{ page_obj.number }}</a>
+                        <a class="page-link bg-dark-subtle" href="#">{{ page_obj.number }}</a>
                     </li>
                     {% if page_obj.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                            <a class="page-link bg-dark-subtle"
+                               href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                            <a class="page-link bg-dark-subtle"
+                               href="?page={{ page_obj.paginator.num_pages }}">
                                 <span>&raquo;</span>
                             </a>
                         </li>

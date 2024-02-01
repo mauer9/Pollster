@@ -4,14 +4,15 @@ FEATURES:
 |crud functionality
 |
 |for regular users:
-|polls pagination
-|users can add their polls
 |polls sort by votes
+|users can add their polls
+|users can add max 5 polls
 |̶u̶n̶v̶o̶t̶e̶
 |̶v̶o̶t̶e̶d̶ ̶a̶n̶d̶ ̶n̶o̶t̶ ̶v̶o̶t̶e̶d̶ ̶p̶o̶l̶l̶s̶ ̶u̶i̶
 |̶v̶i̶e̶w̶ ̶m̶y̶ ̶v̶o̶t̶e̶s̶
 |̶c̶h̶a̶n̶g̶e̶ ̶p̶a̶s̶s̶w̶o̶r̶d̶
 |̶d̶e̶l̶e̶t̶e̶ ̶a̶c̶c̶o̶u̶n̶t̶
+|̶p̶o̶l̶l̶s̶ ̶p̶a̶g̶i̶n̶a̶t̶i̶o̶n̶
 
 UNIT TESTS
 |regular user cannot vote multiple times
