@@ -5,25 +5,27 @@
         <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>
         <h1 class="text-white">{{ poll.text }}</h1>
         <p class="text-white">
-            <small>{{ poll.pub_date }}, <b>{{ poll.get_total_votes }}</b> votes</small>
+            <small>{{ poll.updated_at }}, <b>{{ poll.total_votes }}</b> votes</small>
         </p>
         {% if error_message %}
             <p class="text-white">
                 <strong>{{ error_message }}</strong>
             </p>
         {% endif %}
-        <div class="progress-stacked">
-            {% for choice in choices %}
-                <div class="progress"
-                     role="progressbar"
-                     aria-label="Segment one"
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     style="width: {{ choice.percent }}%">
-                    <div class="progress-bar bg-{{ choice.color }}"></div>
-                </div>
-            {% endfor %}
-        </div>
+        {% if poll.total_votes %}
+            <div class="progress-stacked">
+                {% for choice in choices %}
+                    <div class="progress"
+                         role="progressbar"
+                         aria-label="Segment one"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         style="width: {{ choice.percent }}%">
+                        <div class="progress-bar bg-{{ choice.color }}"></div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <ul class="list-group list-group-flush mb-3">
             {% for choice in choices %}
                 <li class="list-group-item bg-dark d-flex align-items-center ps-0 border-dark-subtle">

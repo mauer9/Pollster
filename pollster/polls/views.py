@@ -42,15 +42,15 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         queryset = Poll.objects.filter(
-            pub_date__lte=timezone.now(), choice__isnull=False
+            created_at__lte=timezone.now(), choice__isnull=False
         ).distinct()
 
         # sort queryset by date (by default) or by name
-        queryset = queryset.order_by("pub_date")
+        queryset = queryset.order_by("updated_at")
         sort = self.request.GET.get("sort")
         match sort:
             case "-date":
-                queryset = queryset.order_by("-pub_date")
+                queryset = queryset.order_by("-updated_at")
             case "name":
                 queryset = queryset.order_by("text")
             case "-name":
@@ -67,7 +67,7 @@ class DetailView(generic.DetailView):
     template_name = "polls/detail.html"
     context_object_name = "poll"
     queryset = Poll.objects.filter(
-        pub_date__lte=timezone.now(), choice__isnull=False
+        created_at__lte=timezone.now(), choice__isnull=False
     ).distinct()
 
     def get_context_data(self, **kwargs):

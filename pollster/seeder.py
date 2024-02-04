@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from polls.models import Poll, Choice, Vote
 from faker import Faker
+
 fake = Faker()
 
 
@@ -17,12 +18,13 @@ def seed_polls(n = 5):
 
     polls = [
         Poll.objects.create(
-            text=fake.sentence(), pub_date=timezone.now()
+            text=fake.sentence()
         )
         for _ in range(n)
     ]
-    print('seed polls success')
+    print("seed polls success")
     return polls
+
 
 def seed_choices(n = 5, polls = None):
     """
@@ -38,7 +40,8 @@ def seed_choices(n = 5, polls = None):
     for poll in polls:
         for _ in range(n):
             Choice.objects.create(poll = poll, text = fake.word())
-    print('seed choice success')
+    print("seed choice success")
+
 
 def seed_votes(n = 30, polls = None):
     """
@@ -60,7 +63,8 @@ def seed_votes(n = 30, polls = None):
         for _ in range(n):
             choice = random.choice(choices)
             Vote.objects.create(user=user, poll=poll, choice=choice)
-    print('seed votes success')
+    print("seed votes success")
+
 
 def seed_all(polls_n = 5, choices_n = 5, votes_n = 30):
     """
@@ -74,4 +78,4 @@ def seed_all(polls_n = 5, choices_n = 5, votes_n = 30):
     polls = seed_polls(polls_n)
     seed_choices(choices_n, polls)
     seed_votes(votes_n, polls)
-    print('seed all success')
+    print("seed all success")

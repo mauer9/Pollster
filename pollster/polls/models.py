@@ -1,20 +1,26 @@
-import datetime
 from itertools import cycle
 from django.db import models
-from django.db.models import Count
 from django.utils import timezone
-from django.contrib import admin
 from django.contrib.auth.models import User
 
 
-class Poll(models.Model):
-    text = models.CharField(max_length=200)
-    pub_date = models.DateField("date published")
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(db_index=True, default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
-    @admin.display(boolean=True, ordering="pub_date", description="Published recently?")
-    def recently_published(self):
-        now = timezone.now().date()
-        return now - datetime.timedelta(days=1) <= self.pub_date <= now
+    class Meta:
+        abstract = True
+
+
+class Poll(BaseModel):
+    text = models.CharField(max_length=200)
+
+    # import datetime
+    # from django.contrib import admin
+    # @admin.display(boolean=True, ordering="updated_at", description="Published recently?")
+    # def recently_published(self):
+    #     now = timezone.now().date()
+    #     return now - datetime.timedelta(days=1) <= self.updated_at <= now
 
     @property
     def total_votes(self):
@@ -23,7 +29,7 @@ class Poll(models.Model):
     def get_choices_with_params(self):
         res = []
         choices = self.choice_set.all()
-        choices = choices.annotate(vote_count=Count("vote"))
+        choices = choices.annotate(vote_count=models.Count("vote"))
         choices = choices.order_by("-vote_count")
         colors = cycle(
             [
@@ -52,7 +58,7 @@ class Poll(models.Model):
         return self.text
 
 
-class Choice(models.Model):
+class Choice(BaseModel):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
     text = models.CharField(max_length=200)
 
@@ -60,7 +66,7 @@ class Choice(models.Model):
         return self.text
 
 
-class Vote(models.Model):
+class Vote(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
