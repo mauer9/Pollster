@@ -65,21 +65,29 @@ def logout(request):
     auth_logout(request)
     return redirect("home")
 
-
 class MyPolls(LoginRequiredMixin, ListView):
-    """Show polls that user voted for"""
+    """Show user created polls"""
+    redirect_field_name = None
+    template_name = "accounts/polls.html"
+    context_object_name = "polls"
 
+    def get_queryset(self):
+        return Poll.objects.filter(author=self.request.user)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return context
+
+class MyVotes(LoginRequiredMixin, ListView):
+    """Show polls that user voted for"""
     redirect_field_name = None
     template_name = "accounts/votes.html"
     context_object_name = "polls"
 
     def get_queryset(self):
         """queryset of polls that user voted for"""
-        if votes := Vote.objects.filter(user=self.request.user):
-            polls = set()
-            for vote in votes:
-                polls.add(vote.poll)
-            return polls
+        if votes := Vote.objects.filter(voter=self.request.user):
+            return set(votes)
 
     def get_context_data(self, **kwargs):
         """
@@ -93,7 +101,7 @@ class MyPolls(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
 
         # user did not vote for any poll
-        if not (all_user_votes := Vote.objects.filter(user=self.request.user)):
+        if not (all_user_votes := Vote.objects.filter(voter=self.request.user)):
             return context
 
         polls = defaultdict(int)

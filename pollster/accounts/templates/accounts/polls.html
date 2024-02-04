@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if polls %}
+        <div class="list-group">
+            {% for poll in polls %}
+                <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start">
+                    <a class="ms-2 me-auto" href="{% url 'polls:detail' poll.id %}">{{ poll.text }}</a>
+                    <span class="badge bg-primary rounded-pill ms-2">{{ poll.total_votes }}</span>
+                </li>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You did not vote for any poll</p>
+    {% endif %}
+{% endblock %}

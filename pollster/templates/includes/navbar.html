@@ -21,6 +21,9 @@
                            aria-expanded="false">{{ request.user.username }}</a>
                         <ul class="dropdown-menu">
                             <li>
+                                <a class="dropdown-item" href="{% url 'accounts:polls' %}">My polls</a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{% url 'accounts:votes' %}">My votes</a>
                             </li>
                             <li>
