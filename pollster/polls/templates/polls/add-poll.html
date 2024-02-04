@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+    <form method='post' class="row g-3">
+        {% csrf_token %}
+        <h1 class="text-white">Add new poll</h1>
+        <small>You have 5 polls left</small>
+        <div class="row g-3" id="fields">
+            {% if message %}
+                <div class="col-md-12">
+                    <p class="border-start border-danger border-5 bg-danger bg-opacity-50 px-1 m-0">{{ message }}</p>
+                </div>
+            {% endif %}
+            <div class="col-md-12 pe-0 m-0">
+                <textarea class="form-control form-control-lg"
+                          name="text"
+                          placeholder="Poll text"
+                          rows="1"></textarea>
+            </div>
+            <div class="input-group input-group-sm col-md-12 pe-0">
+                <input type="text"
+                       name="choices"
+                       class="form-control"
+                       placeholder="Choice"
+                       required>
+            </div>
+            <div class="input-group input-group-sm col-md-12 pe-0">
+                <input type="text"
+                       name="choices"
+                       class="form-control"
+                       placeholder="Choice"
+                       required>
+            </div>
+            <div class="col-md-12 pe-0" id="button">
+                <a class="btn btn-outline-secondary btn-sm" onclick="add()">+ Choice</a>
+            </div>
+        </div>
+        <div class="row g-3 mt-0">
+            <div class="col-md-12 pe-0">
+                <button type="submit" class="btn btn-primary">Create poll</button>
+            </div>
+        </div>
+    </form>
+    <script>
+       function add() {
+         let choiceButton = document.querySelector("#button");
+         let field = document.createElement('div');
+         field.innerHTML = '<input type="text" class="form-control" name="choices" placeholder="Choice" required><a class="btn btn-sm btn-outline-secondary border-start-0" onclick="this.parentElement.remove()">&times;</a>'
+         field.className = 'input-group input-group-sm col-md-12 pe-0'
+         choiceButton.before(field);
+       }
+    </script>
+{% endblock %}

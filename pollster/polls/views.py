@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
@@ -111,3 +111,23 @@ def vote(request, pk):
             choice = Choice.objects.get(pk=choice)
             Vote.objects.create(user=user, poll=poll, choice=choice)
     return redirect
+
+
+class AddPollView(LoginRequiredMixin, generic.TemplateView):
+    redirect_field_name = None
+    template_name = "polls/add-poll.html"
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        poll_text = request.POST.get("text")
+        choices = request.POST.getlist("choices")
+        if not poll_text:
+            context["message"] = "Poll text not provided"
+            return self.render_to_response(context)
+        if not choices or len(choices) == 1:
+            context["message"] = "At least 2 choices should be provided"
+            return self.render_to_response(context)
+        poll = Poll.objects.create(text=poll_text)
+        for choice in choices:
+            Choice.objects.create(poll=poll, text=choice)
+        return self.render_to_response(context)

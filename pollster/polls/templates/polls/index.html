@@ -4,27 +4,35 @@
     {% if polls %}
         <div class="polls-list">
             <h1 class="text-white mb-5">Welcome!</h1>
-            <a class="btn {{ date_btn }} btn-sm lh-lg"
-               href="?sort={{ date_href }}"
-               role="button">
-                <img src="{% static 'img/sort-date.png' %}" width='20px' height='20px' />
-                Date
-                <img src="{% static date_arrow %}" width='20px' height='20px' />
-            </a>
-            <a class="btn {{ name_btn }} btn-sm lh-lg"
-               href="?sort={{ name_href }}"
-               role="button">
-                <img src="{% static 'img/sort-name.png' %}" width='20px' height='20px' />
-                Name
-                <img src="{% static name_arrow %}" width='20px' height='20px' />
-            </a>
-            <a class="btn {{ votes_btn }} btn-sm lh-lg"
-               href="?sort={{ votes_href }}"
-               role="button">
-                <img src="{% static 'img/sort-voted.png' %}" width='20px' height='20px' />
-                Votes
-                <img src="{% static votes_arrow %}" width='20px' height='20px' />
-            </a>
+            <div class="d-flex flex-row">
+                <a class="btn {{ date_btn }} btn-sm lh-lg"
+                   href="?sort={{ date_href }}"
+                   role="button">
+                    <img src="{% static 'img/sort-date.png' %}" width='20px' height='20px' />
+                    Date
+                    <img src="{% static date_arrow %}" width='20px' height='20px' />
+                </a>
+                <a class="btn {{ name_btn }} btn-sm lh-lg ms-2"
+                   href="?sort={{ name_href }}"
+                   role="button">
+                    <img src="{% static 'img/sort-name.png' %}" width='20px' height='20px' />
+                    Name
+                    <img src="{% static name_arrow %}" width='20px' height='20px' />
+                </a>
+                <a class="btn {{ votes_btn }} btn-sm lh-lg ms-2"
+                   href="?sort={{ votes_href }}"
+                   role="button">
+                    <img src="{% static 'img/sort-voted.png' %}" width='20px' height='20px' />
+                    Votes
+                    <img src="{% static votes_arrow %}" width='20px' height='20px' />
+                </a>
+                <a class="btn btn-info btn-sm lh-lg ms-auto"
+                   href="{% url 'polls:add' %}"
+                   role="button">
+                    <img src="{% static 'img/plus.png' %}" width='20px' height='20px' />
+                    Add
+                </a>
+            </div>
             <div class="list-group mt-3">
                 {% for poll in polls %}
                     <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start">
