@@ -81,7 +81,7 @@ class DetailView(generic.DetailView):
 
         # if user already voted in the current pole
         # pass the user choice to the template so voted choices will be checked
-        all_user_votes = Vote.objects.filter(user=self.request.user)
+        all_user_votes = Vote.objects.filter(voter=self.request.user)
         if votes := all_user_votes.filter(poll=poll):
             user_choices = [vote.choice.pk for vote in votes]
             context["user_choices"] = user_choices
@@ -101,7 +101,7 @@ def vote(request, pk):
     action = request.POST.get("action")
 
     # do not delete admin votes
-    votes = Vote.objects.filter(user=user, poll=poll)
+    votes = Vote.objects.filter(voter=user, poll=poll)
     if not user.is_superuser and votes:
         votes.delete()
 
@@ -109,7 +109,7 @@ def vote(request, pk):
     if action == "vote":
         for choice in choices or []:
             choice = Choice.objects.get(pk=choice)
-            Vote.objects.create(user=user, poll=poll, choice=choice)
+            Vote.objects.create(voter=user, choice=choice, poll=poll)
     return redirect
 
 

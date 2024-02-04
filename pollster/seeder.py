@@ -18,6 +18,7 @@ def seed_polls(n = 5):
 
     polls = [
         Poll.objects.create(
+            author=1,
             text=fake.sentence()
         )
         for _ in range(n)

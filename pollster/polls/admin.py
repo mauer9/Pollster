@@ -22,3 +22,11 @@ from .models import Poll, Choice, Vote
 #
 # admin.site.register(Poll, PollAdmin)
 # admin.site.register(Choice, ChoiceAdmin)
+
+# models.Poll:
+    # import datetime
+    # from django.contrib import admin
+    # @admin.display(boolean=True, ordering="updated_at", description="Published recently?")
+    # def recently_published(self):
+    #     now = timezone.now().date()
+    #     return now - datetime.timedelta(days=1) <= self.updated_at <= now

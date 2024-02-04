@@ -13,14 +13,8 @@ class BaseModel(models.Model):
 
 
 class Poll(BaseModel):
+    author = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     text = models.CharField(max_length=200)
-
-    # import datetime
-    # from django.contrib import admin
-    # @admin.display(boolean=True, ordering="updated_at", description="Published recently?")
-    # def recently_published(self):
-    #     now = timezone.now().date()
-    #     return now - datetime.timedelta(days=1) <= self.updated_at <= now
 
     @property
     def total_votes(self):
@@ -67,9 +61,9 @@ class Choice(BaseModel):
 
 
 class Vote(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    voter = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user}:{self.choice}:{self.poll}"
+        return f"{self.voter}:{self.choice}:{self.poll}"
