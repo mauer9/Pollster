@@ -3,7 +3,7 @@
     <form method='post' class="row g-3">
         {% csrf_token %}
         <h1 class="text-white">Add new poll</h1>
-        <small>You have 5 polls left</small>
+        <small>You have {{ polls_left }} polls left</small>
         <div class="row g-3" id="fields">
             {% if message %}
                 <div class="col-md-12">
@@ -14,13 +14,15 @@
                 <textarea class="form-control form-control-lg"
                           name="text"
                           placeholder="Poll text"
-                          rows="1"></textarea>
+                          rows="1"
+                          {% if disable_form %}disabled{% endif %}></textarea>
             </div>
             <div class="input-group input-group-sm col-md-12 pe-0">
                 <input type="text"
                        name="choices"
                        class="form-control"
                        placeholder="Choice"
+                       {% if disable_form %}disabled{% endif %}
                        required>
             </div>
             <div class="input-group input-group-sm col-md-12 pe-0">
@@ -28,17 +30,22 @@
                        name="choices"
                        class="form-control"
                        placeholder="Choice"
+                       {% if disable_form %}disabled{% endif %}
                        required>
             </div>
-            <div class="col-md-12 pe-0" id="button">
-                <a class="btn btn-outline-secondary btn-sm" onclick="add()">+ Choice</a>
-            </div>
+            {% if not disable_form %}
+                <div class="col-md-12 pe-0" id="button">
+                    <a class="btn btn-outline-secondary btn-sm" onclick="add()">+ Choice</a>
+                </div>
+            {% endif %}
         </div>
-        <div class="row g-3 mt-0">
-            <div class="col-md-12 pe-0">
-                <button type="submit" class="btn btn-primary">Create poll</button>
+        {% if not disable_form %}
+            <div class="row g-3 mt-0">
+                <div class="col-md-12 pe-0">
+                    <button type="submit" class="btn btn-primary">Create poll</button>
+                </div>
             </div>
-        </div>
+        {% endif %}
     </form>
     <script>
        function add() {

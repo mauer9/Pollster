@@ -4,7 +4,6 @@ FEATURES:
 |crud functionality
 |
 |for regular users:
-|author field for polls
 |users can add max 5 polls
 |users my polls navbar option
 |run server and make link to my app
@@ -18,6 +17,7 @@ FEATURES:
 |̶p̶o̶l̶l̶s̶ ̶s̶o̶r̶t̶
 |̶̶p̶̶o̶̶l̶̶l̶̶s̶̶ ̶̶s̶̶o̶̶r̶̶t̶̶ ̶̶u̶i̶
 |̶u̶s̶e̶r̶s̶ ̶c̶a̶n̶ ̶a̶d̶d̶ ̶t̶h̶e̶i̶r̶ ̶p̶o̶l̶l̶s̶
+|̶a̶u̶t̶h̶o̶r̶ ̶f̶i̶e̶l̶d̶ ̶f̶o̶r̶ ̶p̶o̶l̶l̶s̶
 
 UNIT TESTS
 |regular user cannot vote multiple times

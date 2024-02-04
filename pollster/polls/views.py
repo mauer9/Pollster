@@ -117,17 +117,30 @@ class AddPollView(LoginRequiredMixin, generic.TemplateView):
     redirect_field_name = None
     template_name = "polls/add-poll.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['polls_left'] = 5 - Poll.objects.filter(author=self.request.user).count()
+        if not 0 < context['polls_left'] <= 5:
+            context['message'] = 'You exceeded polls limit'
+            context['disable_form'] = True
+        return context
+
     def post(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
         poll_text = request.POST.get("text")
         choices = request.POST.getlist("choices")
+        
+        if not 0 < context['polls_left'] <= 5:
+            return self.render_to_response(context)
         if not poll_text:
             context["message"] = "Poll text not provided"
             return self.render_to_response(context)
         if not choices or len(choices) == 1:
             context["message"] = "At least 2 choices should be provided"
             return self.render_to_response(context)
-        poll = Poll.objects.create(text=poll_text)
+
+        poll = Poll.objects.create(author=request.user.pk, text=poll_text)
         for choice in choices:
             Choice.objects.create(poll=poll, text=choice)
+
         return self.render_to_response(context)
