@@ -4,3 +4,14 @@
 .polls-list {
     width: 500px;
 }
+
+/* my-polls page */
+.btn-wrapper > a{
+    display: none;
+}
+.btn-wrapper:hover > a{
+    display: block;
+}
+.btn-wrapper:hover > span{
+    display: none;
+}

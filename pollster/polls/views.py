@@ -139,8 +139,9 @@ class AddPollView(LoginRequiredMixin, generic.TemplateView):
             context["message"] = "At least 2 choices should be provided"
             return self.render_to_response(context)
 
-        poll = Poll.objects.create(author=request.user.pk, text=poll_text)
+        poll = Poll.objects.create(author=request.user, text=poll_text)
         for choice in choices:
             Choice.objects.create(poll=poll, text=choice)
-
+        
+        context = self.get_context_data()
         return self.render_to_response(context)

@@ -1,14 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
+    {% if message %}
+        <div class="row pe-0 mb-3">
+            <p class="border-start border-danger border-5 bg-danger bg-opacity-50 ps-1 m-0">{{ message }}</p>
+        </div>
+    {% endif %}
     {% if polls %}
         <div class="list-group">
             {% for poll in polls %}
                 <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start">
                     <a class="ms-2 me-auto" href="{% url 'polls:detail' poll.id %}">{{ poll.text }}</a>
-                    <span class="badge bg-primary rounded-pill ms-2">{{ poll.total_votes }}</span>
+                    <form id="form-{{ poll.pk }}" class="btn-wrapper" method="post">
+                        {% csrf_token %}
+                        <span class="badge bg-primary rounded-pill ms-2">{{ poll.total_votes }}</span>
+                        <!-- add confirm button to make request -->
+                        <a class="btn-close"
+                           onclick="confirm_remove('#form-{{ poll.pk }}', {{ poll.pk }})"></a>
+                    </form>
                 </li>
             {% endfor %}
         </div>
+        <script>
+            function confirm_remove(selector, pk) {
+                let wrapper = document.querySelector(selector);
+                // remove children except csrf
+                while (wrapper.children.length > 1) {
+                    wrapper.removeChild(wrapper.lastChild);
+                }
+                // add submit button and input with ok value
+                wrapper.innerHTML +=`<button class='badge bg-primary rounded-pill ms-2 border-0'>Confirm deletion</button> <input type='text' name='pk' value=${pk} hidden>`;
+            }
+        </script>
     {% else %}
         <p>You did not vote for any poll</p>
     {% endif %}

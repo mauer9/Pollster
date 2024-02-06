@@ -18,7 +18,7 @@ def seed_polls(n = 5):
 
     polls = [
         Poll.objects.create(
-            author=1,
+            author=User.objects.get(pk=1),
             text=fake.sentence()
         )
         for _ in range(n)
@@ -57,13 +57,12 @@ def seed_votes(n = 30, polls = None):
             if not specified, create votes for all polls
     """
     if not polls: polls = Poll.objects.all()
-    user = User.objects.get(pk=1)
 
     for poll in polls:
         choices = poll.choice_set.all()
         for _ in range(n):
             choice = random.choice(choices)
-            Vote.objects.create(user=user, poll=poll, choice=choice)
+            Vote.objects.create(voter=User.objects.get(pk=1), poll=poll, choice=choice)
     print("seed votes success")
 
 

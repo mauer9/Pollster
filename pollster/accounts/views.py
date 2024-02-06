@@ -73,10 +73,19 @@ class MyPolls(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Poll.objects.filter(author=self.request.user)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print(context)
-        return context
+
+    def post(self, request, **kwargs):
+        pk = request.POST.get('pk')
+        poll = get_object_or_404(Poll, pk=pk)
+
+        self.object_list = self.get_queryset()
+        context = self.get_context_data(**kwargs)
+        if poll.author != request.user:
+            context['message']= 'You are not author of this poll'
+        else:
+            poll.delete()
+
+        return self.render_to_response(context)
 
 class MyVotes(LoginRequiredMixin, ListView):
     """Show polls that user voted for"""
