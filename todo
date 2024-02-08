@@ -4,8 +4,6 @@ FEATURES:
 |crud functionality
 
 |for regular users:
-|users can edit their polls
-|run server and make link to my app
 |change polls.view.vote to class
 |̶u̶n̶v̶o̶t̶e̶
 |̶v̶o̶t̶e̶d̶ ̶a̶n̶d̶ ̶n̶o̶t̶ ̶v̶o̶t̶e̶d̶ ̶p̶o̶l̶l̶s̶ ̶u̶i̶
@@ -20,6 +18,7 @@ FEATURES:
 |̶u̶s̶e̶r̶s̶ ̶c̶a̶n̶ ̶a̶d̶d̶ ̶m̶a̶x̶ ̶5̶ ̶p̶o̶l̶l̶s̶
 |̶u̶s̶e̶r̶s̶ ̶m̶y̶ ̶p̶o̶l̶l̶s̶ ̶n̶a̶v̶b̶a̶r̶ ̶o̶p̶t̶i̶o̶n̶
 |̶u̶s̶e̶r̶s̶ ̶c̶a̶n̶ ̶d̶e̶l̶e̶t̶e̶ ̶t̶h̶e̶i̶r̶ ̶p̶o̶l̶l̶s̶
+|̶u̶s̶e̶r̶s̶ ̶c̶a̶n̶ ̶e̶d̶i̶t̶ ̶t̶h̶e̶i̶r̶ ̶p̶o̶l̶l̶s̶
 
 UNIT TESTS
 |regular user cannot vote multiple times

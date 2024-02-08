@@ -5,13 +5,26 @@
     width: 500px;
 }
 
+
 /* my-polls page */
-.btn-wrapper > a{
+.my-polls-li .edit{
+    display: none;
+    width: 18px;
+    height: 18px;
+    opacity: .5;
+}
+.my-polls-li .btn-close{
     display: none;
 }
-.btn-wrapper:hover > a{
-    display: block;
+.my-polls-li:hover .edit{
+    display: flex;
 }
-.btn-wrapper:hover > span{
+.my-polls-li:hover .edit:hover{
+    opacity: 1;
+}
+.my-polls-li:hover .btn-close{
+    display: flex;
+}
+.my-polls-li:hover span{
     display: none;
 }

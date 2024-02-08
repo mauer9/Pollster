@@ -1,15 +1,16 @@
 from collections import defaultdict
+from django.utils import timezone
 from django.shortcuts import redirect, render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
-from django.views.generic import ListView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, DetailView, TemplateView
 
 from .forms import SignupForm, LoginForm, PasswordChangeForm
-from polls.models import Poll, Vote
+from polls.models import Poll, Choice, Vote
 
 
 def signup(request):
@@ -65,30 +66,10 @@ def logout(request):
     auth_logout(request)
     return redirect("home")
 
-class MyPolls(LoginRequiredMixin, ListView):
-    """Show user created polls"""
-    redirect_field_name = None
-    template_name = "accounts/polls.html"
-    context_object_name = "polls"
 
-    def get_queryset(self):
-        return Poll.objects.filter(author=self.request.user)
-
-    def post(self, request, **kwargs):
-        pk = request.POST.get('pk')
-        poll = get_object_or_404(Poll, pk=pk)
-
-        self.object_list = self.get_queryset()
-        context = self.get_context_data(**kwargs)
-        if poll.author != request.user:
-            context['message']= 'You are not author of this poll'
-        else:
-            poll.delete()
-
-        return self.render_to_response(context)
-
-class MyVotes(LoginRequiredMixin, ListView):
+class VotesView(LoginRequiredMixin, ListView):
     """Show polls that user voted for"""
+
     redirect_field_name = None
     template_name = "accounts/votes.html"
     context_object_name = "polls"
@@ -123,6 +104,69 @@ class MyVotes(LoginRequiredMixin, ListView):
 
         context["polls"] = polls
         return context
+
+
+class PollsView(LoginRequiredMixin, ListView):
+    """Show user created polls"""
+
+    redirect_field_name = None
+    template_name = "accounts/polls.html"
+    context_object_name = "polls"
+
+    def get_queryset(self):
+        return Poll.objects.filter(author=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
+    def post(self, request, **kwargs):
+        pk = request.POST.get("pk")
+        poll = get_object_or_404(Poll, pk=pk)
+
+        context = self.get_context_data(**kwargs)
+        if poll.author != request.user:
+            context["message"] = "You are not author of this poll"
+        else:
+            poll.delete()
+
+        return self.render_to_response(context)
+
+
+class EditPollView(LoginRequiredMixin, DetailView):
+    """Edit user created poll"""
+
+    redirect_field_name = None
+    template_name = "accounts/edit-poll.html"
+    context_object_name = "poll"
+
+    def get_queryset(self):
+        return Poll.objects.filter(
+            created_at__lte=timezone.now(),
+            choice__isnull=False,
+            author=self.request.user,
+        ).distinct()
+
+    def post(self, request, **kwargs):
+        poll = self.object = self.get_object()
+        poll_choices = poll.choice_set.all()
+        new_choices = request.POST.getlist("choices")
+
+        # delete choices
+        for poll_choice in poll_choices:
+            if poll_choice.text not in new_choices:
+                poll_choice.delete()
+
+        # create choices
+        poll_choices = [c.text for c in poll_choices]
+        for new_choice in new_choices:
+            if not new_choice:
+                continue
+            if new_choice not in poll_choices:
+                Choice.objects.create(poll=poll, text=new_choice)
+
+        context = self.get_context_data(**kwargs)
+        context["message"] = "Poll updated"
+        return self.render_to_response(context)
 
 
 class PasswordChangeView(LoginRequiredMixin, TemplateView):

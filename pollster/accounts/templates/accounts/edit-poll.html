@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+    <form method='post' class="row g-3">
+        {% csrf_token %}
+        <h1 class="text-white">Edit poll</h1>
+        <div class="row g-3" id="fields">
+            {% if message %}
+                <div class="col-md-12 pe-0 mb-3">
+                    <p class="border-start border-success border-5 bg-success bg-opacity-50 ps-1 m-0">{{ message }}</p>
+                </div>
+            {% endif %}
+            <div class="col-md-12 pe-0 m-0">
+                <textarea class="form-control form-control-lg"
+                          name="text"
+                          placeholder="Poll text"
+                          rows="1">{{poll.text}}</textarea>
+            </div>
+            <div id="choices" class="col-md-12 pe-0 mt-0">
+                {% for choice in poll.choice_set.all %}
+                    <div id="choice-{{ choice.pk }}"
+                         class="input-group input-group-sm col-md-12 pe-0 mt-3">
+                        <input type="text" class="form-control" name="choices" placeholder="Choice" value={{ choice }}>
+                        {% if poll.choice_set.count > 2 %}
+                            <a class="btn btn-sm btn-outline-secondary border-start-0"
+                               onclick="this.parentElement.remove();checkChoicesCount()">&times;</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% if not disable_form %}
+                <div class="col-md-12 pe-0" id="button">
+                    <a class="btn btn-outline-secondary btn-sm" onclick="add()">+ Choice</a>
+                </div>
+            {% endif %}
+        </div>
+        {% if not disable_form %}
+            <div class="row g-3 mt-0">
+                <div class="col-md-12 pe-0">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        {% endif %}
+    </form>
+    <script>
+       function add() {
+           choices = document.querySelector('#choices');
+           temp = document.createElement('div');
+           temp.innerHTML = '<div class="input-group input-group-sm col-md-12 pe-0 mt-3"><input type="text" class="form-control" name="choices" placeholder="Choice"><a class="btn btn-sm btn-outline-secondary border-start-0" onclick="this.parentElement.remove();checkChoicesCount()">&times;</a></div>'
+           choices.appendChild(temp.firstChild);
+       }
+       function checkChoicesCount() {
+           choices = document.querySelector('#choices');
+           if (choices.children.length <= 2) {
+               for (let i = 0; i < choices.children.length; i++) {
+                   child = choices.children[i];
+                   btn = child.querySelector('a');
+                   btn.remove()
+                   console.log(child);
+               }
+           }
+       }
+    </script>
+{% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
     {% if message %}
         <div class="row pe-0 mb-3">
@@ -8,12 +9,17 @@
     {% if polls %}
         <div class="list-group">
             {% for poll in polls %}
-                <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-start">
+                <li class="my-polls-li list-group-item list-group-item-dark d-flex justify-content-between align-items-start">
                     <a class="ms-2 me-auto" href="{% url 'polls:detail' poll.id %}">{{ poll.text }}</a>
-                    <form id="form-{{ poll.pk }}" class="btn-wrapper" method="post">
+                    <form id="form-{{ poll.pk }}"
+                          mehod="post"
+                          class="d-flex align-items-center">
                         {% csrf_token %}
                         <span class="badge bg-primary rounded-pill ms-2">{{ poll.total_votes }}</span>
-                        <!-- add confirm button to make request -->
+                        <a class="edit btn btn-sm me-1 p-0"
+                           href="{% url 'accounts:edit' poll.pk %}">
+                            <img src="{% static 'img/edit.png' %}" width='18px' height='18px' />
+                        </a>
                         <a class="btn-close"
                            onclick="confirm_remove('#form-{{ poll.pk }}', {{ poll.pk }})"></a>
                     </form>
