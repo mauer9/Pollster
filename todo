@@ -1,33 +1,9 @@
-FEATURES:
-|for admin:
-|view users list
-|crud functionality
-
-|for regular users:
-|change polls.view.vote to class
-|̶u̶n̶v̶o̶t̶e̶
-|̶v̶o̶t̶e̶d̶ ̶a̶n̶d̶ ̶n̶o̶t̶ ̶v̶o̶t̶e̶d̶ ̶p̶o̶l̶l̶s̶ ̶u̶i̶
-|̶v̶i̶e̶w̶ ̶m̶y̶ ̶v̶o̶t̶e̶s̶
-|̶c̶h̶a̶n̶g̶e̶ ̶p̶a̶s̶s̶w̶o̶r̶d̶
-|̶d̶e̶l̶e̶t̶e̶ ̶a̶c̶c̶o̶u̶n̶t̶
-|̶p̶o̶l̶l̶s̶ ̶p̶a̶g̶i̶n̶a̶t̶i̶o̶n̶
-|̶p̶o̶l̶l̶s̶ ̶s̶o̶r̶t̶
-|̶̶p̶̶o̶̶l̶̶l̶̶s̶̶ ̶̶s̶̶o̶̶r̶̶t̶̶ ̶̶u̶i̶
-|̶u̶s̶e̶r̶s̶ ̶c̶a̶n̶ ̶a̶d̶d̶ ̶t̶h̶e̶i̶r̶ ̶p̶o̶l̶l̶s̶
-|̶a̶u̶t̶h̶o̶r̶ ̶f̶i̶e̶l̶d̶ ̶f̶o̶r̶ ̶p̶o̶l̶l̶s̶
-|̶u̶s̶e̶r̶s̶ ̶c̶a̶n̶ ̶a̶d̶d̶ ̶m̶a̶x̶ ̶5̶ ̶p̶o̶l̶l̶s̶
-|̶u̶s̶e̶r̶s̶ ̶m̶y̶ ̶p̶o̶l̶l̶s̶ ̶n̶a̶v̶b̶a̶r̶ ̶o̶p̶t̶i̶o̶n̶
-|̶u̶s̶e̶r̶s̶ ̶c̶a̶n̶ ̶d̶e̶l̶e̶t̶e̶ ̶t̶h̶e̶i̶r̶ ̶p̶o̶l̶l̶s̶
-|̶u̶s̶e̶r̶s̶ ̶c̶a̶n̶ ̶e̶d̶i̶t̶ ̶t̶h̶e̶i̶r̶ ̶p̶o̶l̶l̶s̶
-
 UNIT TESTS
 |regular user cannot vote multiple times
 |login and signup works properly
 
 README
-|docker compose tutorial
 |video tutorial on windows
-
 
 IDEAS
 |http requests testing with jmeter
@@ -37,7 +13,5 @@ IDEAS
 |template defaults are set on registration/login.html
 |https://docs.djangoproject.com/en/5.0/topics/auth/default/
 |also, using CBV django.contrib.auth.LoginView instead of FBV
-
-|admin page?
 
 s/./&̶/g

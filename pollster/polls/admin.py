@@ -2,31 +2,32 @@ from django.contrib import admin
 from .models import Poll, Choice, Vote
 
 
-# class ChoiceAdmin(admin.ModelAdmin):
-#     fields = ['poll', 'text']
-#
-# class ChoiceInline(admin.TabularInline):
-#     model = Choice
-#     extra = 1
-#
-# class PollAdmin(admin.ModelAdmin):
-#     list_display = ['text', 'pub_date', 'recently_published']
-#     list_filter = ['pub_date']
-#     search_fields = ['text']
-#     fieldsets = [
-#         ('Text information', {'fields': ['text']}),
-#         ('Date information', {'fields': ['pub_date']})
-#     ]
-#     inlines = [ChoiceInline]
-#
-#
-# admin.site.register(Poll, PollAdmin)
-# admin.site.register(Choice, ChoiceAdmin)
+class VoteAdmin(admin.ModelAdmin):
+    list_display = ["voter", "choice", "poll", "created_at", "updated_at"]
+    fields = ["voter", "choice", "poll", "created_at"]
 
-# models.Poll:
-    # import datetime
-    # from django.contrib import admin
-    # @admin.display(boolean=True, ordering="updated_at", description="Published recently?")
-    # def recently_published(self):
-    #     now = timezone.now().date()
-    #     return now - datetime.timedelta(days=1) <= self.updated_at <= now
+
+class ChoiceAdmin(admin.ModelAdmin):
+    list_display = ["text", "poll", "created_at", "updated_at"]
+    fields = ["poll", "text"]
+
+
+class ChoiceInline(admin.TabularInline):
+    model = Choice
+    extra = 1
+
+
+class PollAdmin(admin.ModelAdmin):
+    list_display = ["text", "created_at", "updated_at"]
+    list_filter = ["created_at"]
+    search_fields = ["text"]
+    fieldsets = [
+        ("Text information", {"fields": ["text"]}),
+        ("Date information", {"fields": ["created_at"]}),
+    ]
+    inlines = [ChoiceInline]
+
+
+admin.site.register(Poll, PollAdmin)
+admin.site.register(Choice, ChoiceAdmin)
+admin.site.register(Vote, VoteAdmin)
