@@ -30,7 +30,9 @@ SECRET_KEY = "django-insecure-n__8ey3ntm85^vp=3o^qtxj_k*u=v1(15z!h(y))0g88zw#rtj
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Application definition
 
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -54,9 +57,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-ROOT_URLCONF = "pollster.urls"
+ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
@@ -74,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "pollster.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application"
 
 
 # Database
@@ -91,6 +95,17 @@ DATABASES = {
     }
 }
 
+# Redis
+
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_PORT = os.getenv("REDIS_PORT")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}",
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

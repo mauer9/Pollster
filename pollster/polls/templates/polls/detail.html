@@ -4,8 +4,11 @@
         {% csrf_token %}
         <a href="{% url 'polls:index' %}" class="btn btn-secondary mb-3">Back to polls</a>
         <h1 class="text-white">{{ poll.text }}</h1>
+        <p class="text-white mb-0">
+            <small>{{ poll.updated_at }}</small>
+        </p>
         <p class="text-white">
-            <small>{{ poll.updated_at }}, <b>{{ poll.total_votes }}</b> votes</small>
+            <small>{{ poll.total_votes }} votes</small>
         </p>
         {% if error_message %}
             <p class="text-white">

@@ -1,3 +1,6 @@
+!implement api
+!How to implement redis in this app?
+
 UNIT TESTS
 |regular user cannot vote multiple times
 |login and signup works properly

@@ -72,12 +72,13 @@ class DetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if not self.request.user.is_authenticated:
-            return context
 
         poll = self.get_object()
         choices = poll.get_choices_with_params()
         context["choices"] = choices
+
+        if not self.request.user.is_authenticated:
+            return context
 
         # if user already voted in the current pole
         # pass the user choice to the template so voted choices will be checked
@@ -85,6 +86,7 @@ class DetailView(generic.DetailView):
         if votes := all_user_votes.filter(poll=poll):
             user_choices = [vote.choice.pk for vote in votes]
             context["user_choices"] = user_choices
+
         return context
 
 
@@ -119,18 +121,20 @@ class AddPollView(LoginRequiredMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['polls_left'] = 5 - Poll.objects.filter(author=self.request.user).count()
-        if not 0 < context['polls_left'] <= 5:
-            context['message'] = 'You exceeded polls limit'
-            context['disable_form'] = True
+        context["polls_left"] = (
+            5 - Poll.objects.filter(author=self.request.user).count()
+        )
+        if not 0 < context["polls_left"] <= 5:
+            context["message"] = "You exceeded polls limit"
+            context["disable_form"] = True
         return context
 
     def post(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
         poll_text = request.POST.get("text")
         choices = request.POST.getlist("choices")
-        
-        if not 0 < context['polls_left'] <= 5:
+
+        if not 0 < context["polls_left"] <= 5:
             return self.render_to_response(context)
         if not poll_text:
             context["message"] = "Poll text not provided"
@@ -142,6 +146,6 @@ class AddPollView(LoginRequiredMixin, generic.TemplateView):
         poll = Poll.objects.create(author=request.user, text=poll_text)
         for choice in choices:
             Choice.objects.create(poll=poll, text=choice)
-        
+
         context = self.get_context_data()
         return self.render_to_response(context)
