@@ -7,7 +7,8 @@ delete choices. Ended poll only shows user the final result of the poll. You
 can sort polls by heading, date and number of votes. Pagination will work even
 after applying filter.
 
-- ✅PostgreSQL database
+- ✅PostgreSQL
+- ✅Redis
 - ✅Registration, Authentication
 - ✅Password validation
 
@@ -15,7 +16,8 @@ Dependencies:
 
 - Python v3.11
 - Django v4.2
-- PostgreSQL 16
+- PostgreSQL v16
+- Redis v7
 
 ## Project Setup
 

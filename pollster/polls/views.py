@@ -2,11 +2,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
 
 from .models import Poll, Choice, Vote
+from .utils import get_btn_context
 
 
 class IndexView(generic.ListView):
@@ -14,29 +16,26 @@ class IndexView(generic.ListView):
     context_object_name = "polls"
     paginate_by = 10
 
+    def get(self, request, *args, **kwards):
+        sort = self.request.GET.get("sort", "date")
+        page = self.request.GET.get("page", "1")
+
+        key = request.META.get("PATH_INFO")
+        key += "?sort=" + sort + "&page" + page
+        cached_data = cache.get(key)
+        if cached_data:
+            return cached_data
+
+        response = super().get(request, *args, **kwards)
+        response.render()
+        cache.set(key, response)
+        return response
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        sorting_buttons = {
-            "date": {"btn": "btn-primary", "href": "-date", "arrow": "img/up.png"},
-            "name": {"btn": "btn-primary", "href": "name", "arrow": "img/up.png"},
-            "votes": {"btn": "btn-primary", "href": "votes", "arrow": "img/up.png"},
-        }
-
         sort = self.request.GET.get("sort", "")
-
-        for key, button in sorting_buttons.items():
-            if sort == key:
-                button["btn"] = "btn-warning"
-                button["href"] = f"-{key}"
-            if sort == f"-{key}":
-                button["btn"] = "btn-warning"
-                button["href"] = key
-                button["arrow"] = "img/down.png"
-
-        for key, btn in sorting_buttons.items():
-            for name, value in btn.items():
-                context[f"{key}_{name}"] = value
+        context |= get_btn_context(sort)
 
         return context
 
@@ -46,9 +45,11 @@ class IndexView(generic.ListView):
         ).distinct()
 
         # sort queryset by date (by default) or by name
-        queryset = queryset.order_by("updated_at")
-        sort = self.request.GET.get("sort")
+        sort = self.request.GET.get("sort", "date")
+
         match sort:
+            case "date":
+                queryset = queryset.order_by("updated_at")
             case "-date":
                 queryset = queryset.order_by("-updated_at")
             case "name":
@@ -59,6 +60,7 @@ class IndexView(generic.ListView):
                 queryset = sorted(queryset, key=lambda x: x.total_votes, reverse=True)
             case "-votes":
                 queryset = sorted(queryset, key=lambda x: x.total_votes)
+
         return queryset
 
 
@@ -111,6 +113,7 @@ def vote(request, pk):
     if action == "vote":
         for choice in choices or []:
             choice = Choice.objects.get(pk=choice)
+            # bulk_create
             Vote.objects.create(voter=user, choice=choice, poll=poll)
     return redirect
 

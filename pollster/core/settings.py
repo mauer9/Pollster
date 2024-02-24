@@ -30,9 +30,9 @@ SECRET_KEY = "django-insecure-n__8ey3ntm85^vp=3o^qtxj_k*u=v1(15z!h(y))0g88zw#rtj
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
+
+if DEBUG:
+    INTERNAL_IPS = ["127.0.0.1"]
 
 # Application definition
 
@@ -50,13 +50,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
@@ -102,8 +102,11 @@ REDIS_PORT = os.getenv("REDIS_PORT")
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     }
 }
 
