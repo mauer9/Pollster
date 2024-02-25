@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
+from icecream import ic
 
 from .models import Poll, Choice, Vote
 from .utils import get_btn_context
@@ -71,6 +72,17 @@ class DetailView(generic.DetailView):
     queryset = Poll.objects.filter(
         created_at__lte=timezone.now(), choice__isnull=False
     ).distinct()
+
+    def get(self, request, *args, **kwards):
+        key = request.META.get("PATH_INFO")
+        cached_data = cache.get(key)
+        if cached_data:
+            return cached_data
+
+        response = super().get(request, *args, **kwards)
+        response.render()
+        cache.set(key, response)
+        return response
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, TemplateView
 
 from .forms import SignupForm, LoginForm, PasswordChangeForm
-from polls.models import Poll, Choice, Vote
+from pollster.polls.models import Poll, Choice, Vote
 
 
 def signup(request):
