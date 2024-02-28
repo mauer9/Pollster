@@ -6,10 +6,14 @@ from django.core.cache import cache
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
-from icecream import ic
 
 from .models import Poll, Choice, Vote
+from .tasks import send_email_task
 from .utils import get_btn_context
+
+from icecream import ic
+
+ic.configureOutput(prefix="")
 
 
 class IndexView(generic.ListView):
@@ -18,8 +22,8 @@ class IndexView(generic.ListView):
     paginate_by = 10
 
     def get(self, request, *args, **kwards):
-        sort = self.request.GET.get("sort", "date")
-        page = self.request.GET.get("page", "1")
+        sort = self.request.POST.get("sort", "date")
+        page = self.request.POST.get("page", "1")
 
         key = request.META.get("PATH_INFO")
         key += "?sort=" + sort + "&page" + page
@@ -35,7 +39,7 @@ class IndexView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        sort = self.request.GET.get("sort", "")
+        sort = self.request.POST.get("sort", "")
         context |= get_btn_context(sort)
 
         return context
@@ -46,7 +50,7 @@ class IndexView(generic.ListView):
         ).distinct()
 
         # sort queryset by date (by default) or by name
-        sort = self.request.GET.get("sort", "date")
+        sort = self.request.POST.get("sort", "date")
 
         match sort:
             case "date":
@@ -163,4 +167,26 @@ class AddPollView(LoginRequiredMixin, generic.TemplateView):
             Choice.objects.create(poll=poll, text=choice)
 
         context = self.get_context_data()
+        return self.render_to_response(context)
+
+
+class TestView(generic.TemplateView):
+    template_name = "polls/test.html"
+
+    def post(self, request, **kwargs):
+        from datetime import datetime
+
+        now = datetime.now()
+        now = now.strftime("%H:%M:%S")
+
+        context = self.get_context_data(**kwargs)
+
+        recipient = request.POST.get("recipient")
+        subject = request.POST.get("subject") + " - " + now
+        message = request.POST.get("message")
+
+        ic(recipient, subject, message)
+        send_email_task.apply_async(args=[recipient, subject, message])
+        context["message"] = "Email successfully sent!"
+
         return self.render_to_response(context)

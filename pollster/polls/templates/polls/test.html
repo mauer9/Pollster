@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="text-white mb-5">Send mail</h1>
+    <form method='post' class="row g-3">
+        {% csrf_token %}
+        {% if message %}
+            <div class="col-md-12">
+                <p class="border-start border-success border-5 bg-success bg-opacity-50 px-1 m-0">{{ message }}</p>
+            </div>
+        {% endif %}
+        <div class="col-md-12">
+            <input type="text"
+                   name="recipient"
+                   maxlength="100"
+                   placeholder="Recipient"
+                   class="form-control {{ error_css }}"
+                   required>
+        </div>
+        <div class="col-md-12">
+            <input type="text"
+                   name="subject"
+                   maxlength="100"
+                   placeholder="Subject"
+                   class="form-control {{ error_css }}"
+                   required>
+        </div>
+        <div class="col-md-12">
+            <input type="text"
+                   name="message"
+                   maxlength="100"
+                   placeholder="Message"
+                   class="form-control {{ error_css }}"
+                   required>
+        </div>
+        <div class="col-md-12">
+            <button class="btn btn-primary" type="submit">Send</button>
+        </div>
+    </form>
+{% endblock %}
